@@ -8,9 +8,12 @@
     <groupId>com.wuyiccc</groupId>
     <artifactId>hellomq</artifactId>
     <version>beta-0.1</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>hellomq</name>
     <description>hellomq</description>
+    <modules>
+        <module>hellomq-broker</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
