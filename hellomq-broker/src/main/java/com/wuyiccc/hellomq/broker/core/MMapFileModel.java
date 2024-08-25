@@ -1,4 +1,4 @@
-package com.wuyiccc.hellomq.broker.utils;
+package com.wuyiccc.hellomq.broker.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,14 +14,10 @@ import java.util.Objects;
 
 /**
  * @author wuyiccc
- * @date 2024/8/25 11:01
- * 支持基于java的MMap api访问文件的能力 (文件的读写)
- * 支持指定的offset的文件映射 (end offset - start offset = 映射的内存体积)
- * 文件从指定的offset开始读取
- * 文件从指定的offset开始写入
- * 文件映射后的内存释放
+ * @date 2024/8/25 21:35
+ * 最基础的mmap对象模型
  */
-public class MMapUtils {
+public class MMapFileModel {
 
     /**
      * 映射的文件
@@ -31,7 +27,6 @@ public class MMapUtils {
     private MappedByteBuffer mappedByteBuffer;
 
     private FileChannel fileChannel;
-
 
     /**
      * 指定offset做文件的映射
@@ -148,17 +143,4 @@ public class MMapUtils {
             return viewed(viewedBuffer);
         }
     }
-
-
-    //public static void main(String[] args) throws IOException, InterruptedException {
-    //    MMapUtils mMapUtils = new MMapUtils();
-    //
-    //    mMapUtils.loadFileInMMap("./doc/test.txt", 0, 1 * 1024 * 1024);
-    //
-    //    mMapUtils.clear();
-    //
-    //
-    //}
-
-
 }

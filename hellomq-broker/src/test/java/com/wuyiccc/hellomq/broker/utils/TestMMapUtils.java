@@ -14,7 +14,7 @@ public class TestMMapUtils {
 
     private MMapUtils mMapUtils;
 
-    private static final String filePath = "../broker/store/test_topic/0000000";
+    private static final String filePath = "../data/broker/store/test_topic/0000000";
 
     @Before
     public void setUp() throws IOException {
