@@ -10,21 +10,22 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.sql.Time;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author wuyiccc
  * @date 2024/8/25 11:01
- * // 支持基于java的MMap api访问文件的能力 (文件的读写)
- * // 支持指定的offset的文件映射 (end offset - start offset = 映射的内存体积)
- * // 文件从指定的offset开始读取
- * // 文件从指定的offset开始写入
- * // 文件映射后的内存释放
+ * 支持基于java的MMap api访问文件的能力 (文件的读写)
+ * 支持指定的offset的文件映射 (end offset - start offset = 映射的内存体积)
+ * 文件从指定的offset开始读取
+ * 文件从指定的offset开始写入
+ * 文件映射后的内存释放
  */
 public class MMapUtils {
 
+    /**
+     * 映射的文件
+     */
     private File file;
 
     private MappedByteBuffer mappedByteBuffer;
@@ -37,7 +38,8 @@ public class MMapUtils {
      *
      * @param filePath    文件路径
      * @param startOffset 开始映射的offset
-     * @param mappedSize  映射的体积
+     * @param mappedSize  映射的体积 (byte)
+     * @throws IOException
      */
     public void loadFileInMMap(String filePath, int startOffset, int mappedSize) throws IOException {
 
@@ -49,12 +51,14 @@ public class MMapUtils {
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
-        System.out.println("--------------");
     }
 
 
     /**
      * 支持从文件的指定offset开始读取内容
+     *
+     * @param readOffset 开始位置
+     * @param size       内容大小
      */
     public byte[] readContent(int readOffset, int size) {
 
@@ -72,7 +76,8 @@ public class MMapUtils {
     }
 
     /**
-     * 默认不强制刷盘
+     * 写内容到磁盘上, 默认不强制刷盘
+     * @param content 文件内容
      */
     public void writeContent(byte[] content) {
         this.writeContent(content, false);
