@@ -1,7 +1,9 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.config.TopicInfo;
+import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
+
+import java.util.List;
 
 /**
  * @author wuyiccc
@@ -9,9 +11,9 @@ import com.wuyiccc.hellomq.broker.config.TopicInfo;
  */
 public class CommonCache {
 
-    public static GlobalProperties globalProperties = new GlobalProperties();
+    private static GlobalProperties globalProperties;
 
-    public static TopicInfo topicInfo = new TopicInfo();
+    private static List<HelloMqTopicModel> helloMqTopicModelList;
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -21,11 +23,11 @@ public class CommonCache {
         CommonCache.globalProperties = globalProperties;
     }
 
-    public static TopicInfo getTopicInfo() {
-        return topicInfo;
+    public static List<HelloMqTopicModel> getHelloMqTopicModelList() {
+        return helloMqTopicModelList;
     }
 
-    public static void setTopicInfo(TopicInfo topicInfo) {
-        CommonCache.topicInfo = topicInfo;
+    public static void setHelloMqTopicModelList(List<HelloMqTopicModel> helloMqTopicModelList) {
+        CommonCache.helloMqTopicModelList = helloMqTopicModelList;
     }
 }

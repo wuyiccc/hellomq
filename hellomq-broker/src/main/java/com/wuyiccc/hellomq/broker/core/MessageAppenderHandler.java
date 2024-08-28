@@ -8,20 +8,16 @@ import java.util.Objects;
  * @author wuyiccc
  * @date 2024/8/25 21:44
  */
-public class MessageAppender {
+public class MessageAppenderHandler {
 
     private MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
 
-    public MessageAppender() throws IOException {
 
-        prepareMMapLoading();
-    }
-
-    private void prepareMMapLoading() throws IOException {
+    public void prepareMMapLoading(String filePath, String topicName) throws IOException {
 
         MMapFileModel mMapFileModel = new MMapFileModel();
-        mMapFileModel.loadFileInMMap("data/broker/store/test_topic/0000000", 0, 1 * 1024 * 1024);
-        this.mMapFileModelManager.put("test_topic", mMapFileModel);
+        mMapFileModel.loadFileInMMap(filePath, 0, 1 * 1024 * 1024);
+        this.mMapFileModelManager.put(topicName, mMapFileModel);
     }
 
     public void appendMsg(String topic, String content) {
@@ -44,13 +40,6 @@ public class MessageAppender {
         System.out.println(new String(content));
     }
 
-    public static void main(String[] args) throws IOException {
-        MessageAppender messageAppender = new MessageAppender();
 
-        messageAppender.appendMsg("test_topic", "this is content");
-
-        messageAppender.readMsg("test_topic");
-
-    }
 }
 

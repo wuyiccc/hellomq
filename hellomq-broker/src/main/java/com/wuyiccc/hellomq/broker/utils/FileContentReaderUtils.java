@@ -1,13 +1,7 @@
 package com.wuyiccc.hellomq.broker.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
-
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.util.List;
 
 /**
  * @author wuyiccc
@@ -31,13 +25,5 @@ public class FileContentReaderUtils {
         }
     }
 
-    public static void main(String[] args) {
-
-
-        String content = FileContentReaderUtils.readFromFile("config/broker/hellomq-topic.json");
-
-        List<HelloMqTopicModel> hello = JSON.parseArray(content, HelloMqTopicModel.class);
-        System.out.println(hello);
-    }
 
 }

@@ -1,7 +1,7 @@
-package com.wuyiccc.hellomq.broker.config;
+package com.wuyiccc.hellomq.broker.loader;
 
-import com.sun.xml.internal.ws.util.StringUtils;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
+import com.wuyiccc.hellomq.broker.config.GlobalProperties;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import io.netty.util.internal.StringUtil;
 
@@ -22,9 +22,9 @@ public class GlobalPropertiesLoader {
             throw new IllegalArgumentException("HELLO_MQ_HOME_PATH is null or empty");
         }
 
-        globalProperties.setHelloMqHome(System.getProperty(BrokerConstants.HELLO_MQ_HOME_PATH));
+        globalProperties.setHelloMqHome(helloMqHome);
 
-        CommonCache.globalProperties = globalProperties;
+        CommonCache.setGlobalProperties(globalProperties);
     }
 
 
