@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author wuyiccc
  * @date 2024/8/25 21:44
  */
-public class MessageAppenderHandler {
+public class CommitLogAppendHandler {
 
     private MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
 

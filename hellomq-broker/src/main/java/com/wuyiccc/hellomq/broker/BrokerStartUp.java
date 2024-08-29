@@ -2,7 +2,7 @@ package com.wuyiccc.hellomq.broker;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
-import com.wuyiccc.hellomq.broker.core.MessageAppenderHandler;
+import com.wuyiccc.hellomq.broker.core.CommitLogAppendHandler;
 import com.wuyiccc.hellomq.broker.loader.GlobalPropertiesLoader;
 import com.wuyiccc.hellomq.broker.loader.HelloMqTopicLoader;
 import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
@@ -20,7 +20,7 @@ public class BrokerStartUp {
 
     private static HelloMqTopicLoader helloMqTopicLoader;
 
-    private static MessageAppenderHandler messageAppenderHandler;
+    private static CommitLogAppendHandler commitLogAppendHandler;
 
 
     private static void initProperties() throws IOException {
@@ -29,7 +29,7 @@ public class BrokerStartUp {
         globalPropertiesLoader.loadProperties();
         helloMqTopicLoader = new HelloMqTopicLoader();
         helloMqTopicLoader.loadProperties();
-        messageAppenderHandler = new MessageAppenderHandler();
+        commitLogAppendHandler = new CommitLogAppendHandler();
 
         for (HelloMqTopicModel helloMqTopicModel : CommonCache.getHelloMqTopicModelList()) {
             String topicName = helloMqTopicModel.getTopic();
@@ -37,7 +37,7 @@ public class BrokerStartUp {
                     + BrokerConstants.BASE_STORE_PATH
                     + topicName
                     + "/00000000";
-            messageAppenderHandler.prepareMMapLoading(filePath, topicName);
+            commitLogAppendHandler.prepareMMapLoading(filePath, topicName);
         }
     }
 
@@ -46,7 +46,7 @@ public class BrokerStartUp {
         initProperties();
 
         String topic = "test_topic";
-        messageAppenderHandler.appendMsg(topic, "this is a test content");
-        messageAppenderHandler.readMsg(topic);
+        commitLogAppendHandler.appendMsg(topic, "this is a test content");
+        commitLogAppendHandler.readMsg(topic);
     }
 }

@@ -85,8 +85,18 @@ public class MMapFileModel {
      * @param force   是否强制刷盘
      */
     public void writeContent(byte[] content, boolean force) {
+
+
+
+
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
+        MappedByteBuffer byteBuffer = (MappedByteBuffer) mappedByteBuffer.slice();
+        byteBuffer.position(111);
+        byteBuffer.put(content);
+
+
+
         this.mappedByteBuffer.put(content);
         if (force) {
             this.mappedByteBuffer.force();
