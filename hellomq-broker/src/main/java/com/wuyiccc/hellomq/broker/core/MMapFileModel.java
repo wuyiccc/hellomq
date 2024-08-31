@@ -1,5 +1,11 @@
 package com.wuyiccc.hellomq.broker.core;
 
+import com.wuyiccc.hellomq.broker.cache.CommonCache;
+import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.broker.model.CommitLogModel;
+import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,17 +34,22 @@ public class MMapFileModel {
 
     private FileChannel fileChannel;
 
+    private String topicName;
+
     /**
      * 指定offset做文件的映射
      *
-     * @param filePath    文件路径
+     * @param topicName   topic名称
      * @param startOffset 开始映射的offset
      * @param mappedSize  映射的体积 (byte)
      * @throws IOException
      */
-    public void loadFileInMMap(String filePath, int startOffset, int mappedSize) throws IOException {
+    public void loadFileInMMap(String topicName, int startOffset, int mappedSize) throws IOException {
 
-        this.file = new File(filePath);
+
+        String filePath = getLatestCommitLogFile(topicName);
+
+        file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("filePath is " + filePath + " inValid");
         }
@@ -48,6 +59,50 @@ public class MMapFileModel {
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
     }
 
+
+    /**
+     * 获取最新commitLog文件路径
+     */
+    private String getLatestCommitLogFile(String topicName) {
+
+        MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(topicName);
+        if (mqTopicModel == null) {
+            throw new IllegalArgumentException("topic is inValid topicName is " + topicName);
+        }
+
+        CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
+
+        long diff = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+
+        String filePath = null;
+        if (diff == 0) {
+            // 已经写满了
+            filePath = createNewCommitLogFile(topicName, commitLogModel);
+        } else if (diff > 0) {
+            filePath = CommonCache.getGlobalProperties().getHelloMqHome()
+                    + BrokerConstants.BASE_STORE_PATH
+                    + topicName
+                    + commitLogModel.getFileName();
+        }
+        return filePath;
+    }
+
+    private String createNewCommitLogFile(String topicName, CommitLogModel commitLogModel) {
+        String newFileName = CommitLogFileNameUtils.incrCommitLogFileName(commitLogModel.getFileName());
+        String newFilePath = CommonCache.getGlobalProperties().getHelloMqHome()
+                + BrokerConstants.BASE_STORE_PATH
+                + topicName
+                + newFileName;
+
+        File newCommitLogFile = new File(newFilePath);
+        try {
+            newCommitLogFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newFilePath;
+    }
 
     /**
      * 支持从文件的指定offset开始读取内容
@@ -72,6 +127,7 @@ public class MMapFileModel {
 
     /**
      * 写内容到磁盘上, 默认不强制刷盘
+     *
      * @param content 文件内容
      */
     public void writeContent(byte[] content) {
@@ -86,15 +142,19 @@ public class MMapFileModel {
      */
     public void writeContent(byte[] content, boolean force) {
 
-
+        // 定位到最新的commitLog文件中, 记录下当前文件是否已经写满, 如果写满，则创建新的文件，并且做新的mmap映射
+        // 如果当前文件没有写满, 对content内容做一层封装, 再判断写入是否会导致commitLog写满, 如果不会，则选择当前commitLog, 如果会则创建新文件，并且做mmap映射
+        // 定位到最新的commitLog文件之后, 写入
+        // 定义一个对象专门管理各个topic的最新写入offset值, 并且定时刷新到磁盘中
+        // 写入数据, offset变更, 如果是高并发场景, offset是不是会被多个线程访问
 
 
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
         MappedByteBuffer byteBuffer = (MappedByteBuffer) mappedByteBuffer.slice();
+        // 指定offset追加写入
         byteBuffer.position(111);
         byteBuffer.put(content);
-
 
 
         this.mappedByteBuffer.put(content);

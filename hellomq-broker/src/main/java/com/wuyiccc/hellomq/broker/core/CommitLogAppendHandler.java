@@ -13,10 +13,10 @@ public class CommitLogAppendHandler {
     private MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
 
 
-    public void prepareMMapLoading(String filePath, String topicName) throws IOException {
+    public void prepareMMapLoading(String topicName) throws IOException {
 
         MMapFileModel mMapFileModel = new MMapFileModel();
-        mMapFileModel.loadFileInMMap(filePath, 0, 1 * 1024 * 1024);
+        mMapFileModel.loadFileInMMap(topicName, 0, 1 * 1024 * 1024);
         this.mMapFileModelManager.put(topicName, mMapFileModel);
     }
 

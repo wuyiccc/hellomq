@@ -2,18 +2,20 @@ package com.wuyiccc.hellomq.broker.loader;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
+import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.utils.FileContentReaderUtils;
 import com.wuyiccc.hellomq.broker.utils.JsonUtils;
 import io.netty.util.internal.StringUtil;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author wuyiccc
  * @date 2024/8/27 21:46
  */
-public class HelloMqTopicLoader {
+public class MqTopicLoader {
 
     public void loadProperties() {
 
@@ -26,8 +28,9 @@ public class HelloMqTopicLoader {
 
         String fileContent = FileContentReaderUtils.readFromFile(topicJsonFilePath);
 
-        List<HelloMqTopicModel> helloMqTopicLoaderList = JsonUtils.jsonToList(fileContent, HelloMqTopicModel.class);
+        List<MqTopicModel> mqTopicModelList = JsonUtils.jsonToList(fileContent, MqTopicModel.class);
 
-        CommonCache.setHelloMqTopicModelList(helloMqTopicLoaderList);
+        Map<String, MqTopicModel> mqTopicModelCache = mqTopicModelList.stream().collect(Collectors.toMap(MqTopicModel::getTopic, item -> item));
+        CommonCache.setMqTopicModelMap(mqTopicModelCache);
     }
 }

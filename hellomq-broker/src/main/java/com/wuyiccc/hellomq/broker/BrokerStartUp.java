@@ -1,13 +1,13 @@
 package com.wuyiccc.hellomq.broker;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
-import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.core.CommitLogAppendHandler;
 import com.wuyiccc.hellomq.broker.loader.GlobalPropertiesLoader;
-import com.wuyiccc.hellomq.broker.loader.HelloMqTopicLoader;
-import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
+import com.wuyiccc.hellomq.broker.loader.MqTopicLoader;
+import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * @author wuyiccc
@@ -18,7 +18,7 @@ public class BrokerStartUp {
 
     private static GlobalPropertiesLoader globalPropertiesLoader;
 
-    private static HelloMqTopicLoader helloMqTopicLoader;
+    private static MqTopicLoader mqTopicLoader;
 
     private static CommitLogAppendHandler commitLogAppendHandler;
 
@@ -26,18 +26,18 @@ public class BrokerStartUp {
     private static void initProperties() throws IOException {
 
         globalPropertiesLoader = new GlobalPropertiesLoader();
+        // 加载全局配置文件
         globalPropertiesLoader.loadProperties();
-        helloMqTopicLoader = new HelloMqTopicLoader();
-        helloMqTopicLoader.loadProperties();
+        mqTopicLoader = new MqTopicLoader();
+        // 加载topic信息
+        mqTopicLoader.loadProperties();
         commitLogAppendHandler = new CommitLogAppendHandler();
 
-        for (HelloMqTopicModel helloMqTopicModel : CommonCache.getHelloMqTopicModelList()) {
-            String topicName = helloMqTopicModel.getTopic();
-            String filePath = CommonCache.getGlobalProperties().getHelloMqHome()
-                    + BrokerConstants.BASE_STORE_PATH
-                    + topicName
-                    + "/00000000";
-            commitLogAppendHandler.prepareMMapLoading(filePath, topicName);
+        Collection<MqTopicModel> mqTopicModelList = CommonCache.getMqTopicModelMap().values();
+
+        for (MqTopicModel mqTopicModel : mqTopicModelList) {
+            String topicName = mqTopicModel.getTopic();
+            commitLogAppendHandler.prepareMMapLoading(topicName);
         }
     }
 

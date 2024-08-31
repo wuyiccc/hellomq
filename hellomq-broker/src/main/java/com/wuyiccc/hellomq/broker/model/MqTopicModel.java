@@ -5,12 +5,14 @@ import java.util.List;
 /**
  * @author wuyiccc
  * @date 2024/8/27 23:45
- *
+ * <p>
  * mq的topic映射对象
  */
-public class HelloMqTopicModel {
+public class MqTopicModel {
 
     private String topic;
+
+    private CommitLogModel commitLogModel;
 
     private List<QueueModel> queueList;
 
@@ -25,6 +27,14 @@ public class HelloMqTopicModel {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public CommitLogModel getCommitLogModel() {
+        return commitLogModel;
+    }
+
+    public void setCommitLogModel(CommitLogModel commitLogModel) {
+        this.commitLogModel = commitLogModel;
     }
 
     public List<QueueModel> getQueueList() {
@@ -53,8 +63,9 @@ public class HelloMqTopicModel {
 
     @Override
     public String toString() {
-        return "HelloMqTopicModel{" +
+        return "MqTopicModel{" +
                 "topic='" + topic + '\'' +
+                ", commitLogModel=" + commitLogModel +
                 ", queueList=" + queueList +
                 ", createAt='" + createAt + '\'' +
                 ", updateAt='" + updateAt + '\'' +

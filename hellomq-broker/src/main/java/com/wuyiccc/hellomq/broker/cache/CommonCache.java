@@ -1,9 +1,10 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.model.HelloMqTopicModel;
+import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wuyiccc
@@ -13,7 +14,9 @@ public class CommonCache {
 
     private static GlobalProperties globalProperties;
 
-    private static List<HelloMqTopicModel> helloMqTopicModelList;
+
+    private static Map<String, MqTopicModel> mqTopicModelMap = new HashMap<>();
+
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -23,11 +26,12 @@ public class CommonCache {
         CommonCache.globalProperties = globalProperties;
     }
 
-    public static List<HelloMqTopicModel> getHelloMqTopicModelList() {
-        return helloMqTopicModelList;
+
+    public static Map<String, MqTopicModel> getMqTopicModelMap() {
+        return mqTopicModelMap;
     }
 
-    public static void setHelloMqTopicModelList(List<HelloMqTopicModel> helloMqTopicModelList) {
-        CommonCache.helloMqTopicModelList = helloMqTopicModelList;
+    public static void setMqTopicModelMap(Map<String, MqTopicModel> mqTopicModelMap) {
+        CommonCache.mqTopicModelMap = mqTopicModelMap;
     }
 }
