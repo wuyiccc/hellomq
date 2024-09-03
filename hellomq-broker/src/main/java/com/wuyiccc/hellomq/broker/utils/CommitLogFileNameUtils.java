@@ -47,8 +47,4 @@ public class CommitLogFileNameUtils {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        String s = incrCommitLogFileName("00000013");
-        System.out.println(s);
-    }
 }

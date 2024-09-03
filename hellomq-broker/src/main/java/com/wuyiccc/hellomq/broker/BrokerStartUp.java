@@ -7,6 +7,7 @@ import com.wuyiccc.hellomq.broker.loader.MqTopicLoader;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 /**
@@ -46,7 +47,7 @@ public class BrokerStartUp {
         initProperties();
 
         String topic = "test_topic";
-        commitLogAppendHandler.appendMsg(topic, "this is a test content");
+        commitLogAppendHandler.appendMsg(topic, "this is a test content".getBytes(StandardCharsets.UTF_8));
         commitLogAppendHandler.readMsg(topic);
     }
 }

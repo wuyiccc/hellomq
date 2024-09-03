@@ -2,8 +2,10 @@ package com.wuyiccc.hellomq.broker.core;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 import com.wuyiccc.hellomq.broker.model.CommitLogModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import com.wuyiccc.hellomq.broker.utils.ByteConvertUtils;
 import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
 
 import java.io.File;
@@ -128,19 +130,19 @@ public class MMapFileModel {
     /**
      * 写内容到磁盘上, 默认不强制刷盘
      *
-     * @param content 文件内容
+     * @param commitLogMessageModel 文件内容
      */
-    public void writeContent(byte[] content) {
-        this.writeContent(content, false);
+    public void writeContent(CommitLogMessageModel commitLogMessageModel) {
+        this.writeContent(commitLogMessageModel, false);
     }
 
     /**
      * 写入数据到磁盘中
      *
-     * @param content 数据内容
-     * @param force   是否强制刷盘
+     * @param commitLogMessageModel 数据内容
+     * @param force                 是否强制刷盘
      */
-    public void writeContent(byte[] content, boolean force) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) {
 
         // 定位到最新的commitLog文件中, 记录下当前文件是否已经写满, 如果写满，则创建新的文件，并且做新的mmap映射
         // 如果当前文件没有写满, 对content内容做一层封装, 再判断写入是否会导致commitLog写满, 如果不会，则选择当前commitLog, 如果会则创建新文件，并且做mmap映射
@@ -151,13 +153,7 @@ public class MMapFileModel {
 
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
-        MappedByteBuffer byteBuffer = (MappedByteBuffer) mappedByteBuffer.slice();
-        // 指定offset追加写入
-        byteBuffer.position(111);
-        byteBuffer.put(content);
-
-
-        this.mappedByteBuffer.put(content);
+        this.mappedByteBuffer.put(commitLogMessageModel.convertToByte());
         if (force) {
             this.mappedByteBuffer.force();
         }
@@ -213,4 +209,5 @@ public class MMapFileModel {
             return viewed(viewedBuffer);
         }
     }
+
 }

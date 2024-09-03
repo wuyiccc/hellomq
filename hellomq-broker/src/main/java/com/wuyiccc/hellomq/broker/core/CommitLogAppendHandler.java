@@ -1,5 +1,7 @@
 package com.wuyiccc.hellomq.broker.core;
 
+import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -20,14 +22,18 @@ public class CommitLogAppendHandler {
         this.mMapFileModelManager.put(topicName, mMapFileModel);
     }
 
-    public void appendMsg(String topic, String content) {
+    public void appendMsg(String topic, byte[] content) {
 
         MMapFileModel mMapFileModel = this.mMapFileModelManager.get(topic);
         if (Objects.isNull(mMapFileModel)) {
             throw new RuntimeException("topic is invalid");
         }
 
-        mMapFileModel.writeContent(content.getBytes(StandardCharsets.UTF_8));
+        CommitLogMessageModel commitLogMessageModel = new CommitLogMessageModel();
+        commitLogMessageModel.setSize(content.length);
+        commitLogMessageModel.setContent(content);
+
+        mMapFileModel.writeContent(commitLogMessageModel);
     }
 
     public void readMsg(String topic) {
