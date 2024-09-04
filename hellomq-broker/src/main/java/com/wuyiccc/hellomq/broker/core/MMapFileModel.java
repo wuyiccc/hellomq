@@ -5,7 +5,6 @@ import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 import com.wuyiccc.hellomq.broker.model.CommitLogModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
-import com.wuyiccc.hellomq.broker.utils.ByteConvertUtils;
 import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
 
 import java.io.File;
@@ -48,17 +47,9 @@ public class MMapFileModel {
      */
     public void loadFileInMMap(String topicName, int startOffset, int mappedSize) throws IOException {
 
-
+        this.topicName = topicName;
         String filePath = getLatestCommitLogFile(topicName);
-
-        file = new File(filePath);
-        if (!file.exists()) {
-            throw new FileNotFoundException("filePath is " + filePath + " inValid");
-        }
-
-        this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
-
-        this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
+        doMMap(filePath, startOffset, mappedSize);
     }
 
 
@@ -132,7 +123,7 @@ public class MMapFileModel {
      *
      * @param commitLogMessageModel 文件内容
      */
-    public void writeContent(CommitLogMessageModel commitLogMessageModel) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel) throws IOException {
         this.writeContent(commitLogMessageModel, false);
     }
 
@@ -142,7 +133,7 @@ public class MMapFileModel {
      * @param commitLogMessageModel 数据内容
      * @param force                 是否强制刷盘
      */
-    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) throws IOException {
 
         // 定位到最新的commitLog文件中, 记录下当前文件是否已经写满, 如果写满，则创建新的文件，并且做新的mmap映射
         // 如果当前文件没有写满, 对content内容做一层封装, 再判断写入是否会导致commitLog写满, 如果不会，则选择当前commitLog, 如果会则创建新文件，并且做mmap映射
@@ -153,12 +144,45 @@ public class MMapFileModel {
 
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
+        this.checkCommitLogHasEnableSpace(commitLogMessageModel);
+
         this.mappedByteBuffer.put(commitLogMessageModel.convertToByte());
         if (force) {
             this.mappedByteBuffer.force();
         }
     }
 
+
+    private void checkCommitLogHasEnableSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
+
+
+        MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(this.topicName);
+        CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
+        long writeAbleOffsetNum = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+
+        if (writeAbleOffsetNum < commitLogMessageModel.getSize()) {
+            // 空间不足需要创建新的commitLog文件并且做映射
+            // 0000000000 文件  -> 00000001文件
+            String newFilePath = this.createNewCommitLogFile(topicName, commitLogModel);
+
+            this.doMMap(newFilePath, 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+        }
+
+    }
+
+
+    /**
+     * 执行mmap步骤
+     */
+    private void doMMap(String filePath, int startOffset, int mappedSize) throws IOException {
+
+        file = new File(filePath);
+        if (!file.exists()) {
+            throw new FileNotFoundException("filePath is " + filePath + " inValid");
+        }
+        this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
+        this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
+    }
 
     /**
      * 释放DirectByteBuffer的mapped直接内存空间, 可以通过arthas来观察maaped内存释放释放, 参考rocketmq的MappedFile#clean()方法

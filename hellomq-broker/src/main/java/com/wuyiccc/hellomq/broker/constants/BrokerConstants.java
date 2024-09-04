@@ -10,6 +10,9 @@ public class BrokerConstants {
 
     public static final String BASE_STORE_PATH = "/broker/store/";
 
+    // 1mb
+    public static final Integer COMMITLOG_DEFAULT_MMAP_SIZE = 1 * 1024 * 1024;
+
     private BrokerConstants() {
     }
 }

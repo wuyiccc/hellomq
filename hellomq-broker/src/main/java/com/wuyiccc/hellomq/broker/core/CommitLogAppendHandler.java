@@ -1,9 +1,9 @@
 package com.wuyiccc.hellomq.broker.core;
 
+import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -18,11 +18,11 @@ public class CommitLogAppendHandler {
     public void prepareMMapLoading(String topicName) throws IOException {
 
         MMapFileModel mMapFileModel = new MMapFileModel();
-        mMapFileModel.loadFileInMMap(topicName, 0, 1 * 1024 * 1024);
+        mMapFileModel.loadFileInMMap(topicName, 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
         this.mMapFileModelManager.put(topicName, mMapFileModel);
     }
 
-    public void appendMsg(String topic, byte[] content) {
+    public void appendMsg(String topic, byte[] content) throws IOException {
 
         MMapFileModel mMapFileModel = this.mMapFileModelManager.get(topic);
         if (Objects.isNull(mMapFileModel)) {
