@@ -65,7 +65,7 @@ public class MMapFileModel {
 
         CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
 
-        long diff = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+        long diff = commitLogModel.countDiff();
 
         String filePath = null;
         if (diff == 0) {
@@ -75,6 +75,7 @@ public class MMapFileModel {
             filePath = CommonCache.getGlobalProperties().getHelloMqHome()
                     + BrokerConstants.BASE_STORE_PATH
                     + topicName
+                    + File.separator
                     + commitLogModel.getFileName();
         }
         return filePath;
@@ -140,13 +141,22 @@ public class MMapFileModel {
         // 定位到最新的commitLog文件之后, 写入
         // 定义一个对象专门管理各个topic的最新写入offset值, 并且定时刷新到磁盘中
         // 写入数据, offset变更, 如果是高并发场景, offset是不是会被多个线程访问
-
+        MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(topicName);
+        if (mqTopicModel == null) {
+            throw new IllegalArgumentException("mqTopicModel is null");
+        }
+        CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
+        if (commitLogModel == null) {
+            throw new IllegalArgumentException("commitLogModel is null");
+        }
 
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
         this.checkCommitLogHasEnableSpace(commitLogMessageModel);
 
         this.mappedByteBuffer.put(commitLogMessageModel.convertToByte());
+        commitLogModel.getOffset().addAndGet(commitLogMessageModel.getSize());
+
         if (force) {
             this.mappedByteBuffer.force();
         }
@@ -158,7 +168,7 @@ public class MMapFileModel {
 
         MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(this.topicName);
         CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
-        long writeAbleOffsetNum = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+        long writeAbleOffsetNum = commitLogModel.countDiff();
 
         if (writeAbleOffsetNum < commitLogMessageModel.getSize()) {
             // 空间不足需要创建新的commitLog文件并且做映射

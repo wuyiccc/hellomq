@@ -42,7 +42,7 @@ public class CommitLogAppendHandler {
         if (Objects.isNull(mMapFileModel)) {
             throw new RuntimeException("topic is invalid");
         }
-        byte[] content = mMapFileModel.readContent(0, 10);
+        byte[] content = mMapFileModel.readContent(0, 1000);
         System.out.println(new String(content));
     }
 

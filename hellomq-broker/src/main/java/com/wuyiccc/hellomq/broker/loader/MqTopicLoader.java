@@ -49,6 +49,7 @@ public class MqTopicLoader {
                     try {
                         TimeUnit.SECONDS.sleep(BrokerConstants.DEFAULT_REFRESH_MQ_TOPIC_TIME_STEP);
 
+                        System.out.println("刷盘中");
                         // 刷盘
                         List<MqTopicModel> topicModelList = CommonCache.getMqTopicModelList();
                         FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(topicModelList));

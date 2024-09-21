@@ -9,6 +9,7 @@ import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wuyiccc
@@ -43,12 +44,18 @@ public class BrokerStartUp {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         initProperties();
 
         String topic = "test_topic";
-        commitLogAppendHandler.appendMsg(topic, "this is a test content".getBytes(StandardCharsets.UTF_8));
+
+
+        for (int i = 0; i < 10; i++) {
+            commitLogAppendHandler.appendMsg(topic, ("this is a test content" + i).getBytes(StandardCharsets.UTF_8));
+            System.out.println("写入数据");
+            TimeUnit.SECONDS.sleep(5);
+        }
         commitLogAppendHandler.readMsg(topic);
     }
 }

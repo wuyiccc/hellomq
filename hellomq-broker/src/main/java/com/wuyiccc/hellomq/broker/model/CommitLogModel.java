@@ -1,5 +1,7 @@
 package com.wuyiccc.hellomq.broker.model;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author wuyiccc
  * @date 2024/8/31 15:49
@@ -21,7 +23,7 @@ public class CommitLogModel {
     /**
      * 最新commitLog文件写入的地址
      */
-    private Long offset;
+    private AtomicLong offset;
 
     public String getFileName() {
         return fileName;
@@ -39,12 +41,16 @@ public class CommitLogModel {
         this.offsetLimit = offsetLimit;
     }
 
-    public Long getOffset() {
+    public AtomicLong getOffset() {
         return offset;
     }
 
-    public void setOffset(Long offset) {
+    public void setOffset(AtomicLong offset) {
         this.offset = offset;
+    }
+
+    public Long countDiff() {
+        return this.offsetLimit - this.offset.get();
     }
 
     @Override
