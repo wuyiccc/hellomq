@@ -6,6 +6,8 @@ import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 import com.wuyiccc.hellomq.broker.model.CommitLogModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
+import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
+import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +40,8 @@ public class MMapFileModel {
 
     private String topicName;
 
+    private PutMessageLock putMessageLock;
+
     /**
      * 指定offset做文件的映射
      *
@@ -51,6 +55,8 @@ public class MMapFileModel {
         this.topicName = topicName;
         String filePath = getLatestCommitLogFile(topicName);
         doMMap(filePath, startOffset, mappedSize);
+        // 默认非公平模式
+        putMessageLock = new UnfairReentrantLock();
     }
 
 
@@ -145,16 +151,21 @@ public class MMapFileModel {
             throw new IllegalArgumentException("commitLogModel is null");
         }
 
+
+        // lock()
+        putMessageLock.lock();
+        this.checkCommitLogHasEnableSpace(commitLogMessageModel);
+        byte[] bytes = commitLogMessageModel.convertToByte();
+        this.mappedByteBuffer.put(bytes);
+        commitLogModel.getOffset().addAndGet(bytes.length);
+
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
-        this.checkCommitLogHasEnableSpace(commitLogMessageModel);
-
-        this.mappedByteBuffer.put(commitLogMessageModel.convertToByte());
-        commitLogModel.getOffset().addAndGet(commitLogMessageModel.getSize());
-
         if (force) {
             this.mappedByteBuffer.force();
         }
+        // unlock()
+        putMessageLock.unLock();
     }
 
 

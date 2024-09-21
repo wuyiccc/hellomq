@@ -1,5 +1,7 @@
 package com.wuyiccc.hellomq.broker.utils;
 
+import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,9 +10,11 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author wuyiccc
@@ -77,6 +81,7 @@ public class MMapUtils {
 
     /**
      * 写内容到磁盘上, 默认不强制刷盘
+     *
      * @param content 文件内容
      */
     public void writeContent(byte[] content) {
@@ -150,6 +155,40 @@ public class MMapUtils {
     }
 
 
+    public static void main(String[] args) throws IOException, InterruptedException {
+
+        MMapUtils mMapUtils = new MMapUtils();
+        mMapUtils.loadFileInMMap("/Users/wuxingyu/work/code_learn/031-opensource/14_hellomq/hellomq/data/broker/store/test_topic/00000000"
+                , 0
+                , BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+        CountDownLatch count = new CountDownLatch(1);
+        CountDownLatch allWriteSuccess = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            int finalI = i;
+            Thread task = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        count.await();
+                        mMapUtils.writeContent(("test-content-" + finalI).getBytes(StandardCharsets.UTF_8));
+                        allWriteSuccess.countDown();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            task.start();
+        }
+
+        System.out.println("准备执行并发写入mmap测试");
+        count.countDown();
+        allWriteSuccess.await();
+        System.out.println("并发测试写入完毕");
+
+        byte[] content = mMapUtils.readContent(0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+        System.out.println("内容: " + new String(content));
+
+    }
 
 
 }

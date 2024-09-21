@@ -51,11 +51,11 @@ public class BrokerStartUp {
         String topic = "test_topic";
 
 
-        for (int i = 0; i < 10; i++) {
-            commitLogAppendHandler.appendMsg(topic, ("this is a test content" + i).getBytes(StandardCharsets.UTF_8));
+        for (int i = 0; i < 50000; i++) {
+            commitLogAppendHandler.appendMsg(topic, ("this is content" + i).getBytes(StandardCharsets.UTF_8));
             System.out.println("写入数据");
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.MILLISECONDS.sleep(1);
         }
-        commitLogAppendHandler.readMsg(topic);
+        //commitLogAppendHandler.readMsg(topic);
     }
 }
