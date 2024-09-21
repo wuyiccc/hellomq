@@ -1,5 +1,11 @@
 package com.wuyiccc.hellomq.broker.utils;
 
+import com.wuyiccc.hellomq.broker.cache.CommonCache;
+import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+
+import java.io.File;
+import java.util.SplittableRandom;
+
 /**
  * @author wuyiccc
  * @date 2024/8/31 17:32
@@ -11,9 +17,22 @@ public class CommitLogFileNameUtils {
     /**
      * 构建第一份commitLog文件名称
      */
-    public static String buildLatestCommitLogName() {
+    public static String buildFirstCommitLogName() {
 
         return "0000000";
+    }
+
+
+    /**
+     * 构建commitLog文件路径
+     */
+    public static String buildCommitLogFilePath(String topicName, String commitLogFileName) {
+
+        return CommonCache.getGlobalProperties().getHelloMqHome()
+                + BrokerConstants.BASE_STORE_PATH
+                 + topicName
+                + File.separator
+                + commitLogFileName;
     }
 
 

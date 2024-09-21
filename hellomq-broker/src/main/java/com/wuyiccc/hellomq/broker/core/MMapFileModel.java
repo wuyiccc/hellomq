@@ -18,6 +18,7 @@ import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author wuyiccc
@@ -70,23 +71,17 @@ public class MMapFileModel {
         String filePath = null;
         if (diff == 0) {
             // 已经写满了
-            filePath = createNewCommitLogFile(topicName, commitLogModel);
+            CommitLogFilePath newCommitLogFile = createNewCommitLogFile(topicName, commitLogModel);
+            filePath = newCommitLogFile.getFilePath();
         } else if (diff > 0) {
-            filePath = CommonCache.getGlobalProperties().getHelloMqHome()
-                    + BrokerConstants.BASE_STORE_PATH
-                    + topicName
-                    + File.separator
-                    + commitLogModel.getFileName();
+            filePath = CommitLogFileNameUtils.buildCommitLogFilePath(topicName, commitLogModel.getFileName());
         }
         return filePath;
     }
 
-    private String createNewCommitLogFile(String topicName, CommitLogModel commitLogModel) {
+    private CommitLogFilePath createNewCommitLogFile(String topicName, CommitLogModel commitLogModel) {
         String newFileName = CommitLogFileNameUtils.incrCommitLogFileName(commitLogModel.getFileName());
-        String newFilePath = CommonCache.getGlobalProperties().getHelloMqHome()
-                + BrokerConstants.BASE_STORE_PATH
-                + topicName
-                + newFileName;
+        String newFilePath = CommitLogFileNameUtils.buildCommitLogFilePath(topicName, newFileName);
 
         File newCommitLogFile = new File(newFilePath);
         try {
@@ -95,7 +90,7 @@ public class MMapFileModel {
             throw new RuntimeException(e);
         }
 
-        return newFilePath;
+        return new CommitLogFilePath(newFilePath, newFileName);
     }
 
     /**
@@ -173,9 +168,12 @@ public class MMapFileModel {
         if (writeAbleOffsetNum < commitLogMessageModel.getSize()) {
             // 空间不足需要创建新的commitLog文件并且做映射
             // 0000000000 文件  -> 00000001文件
-            String newFilePath = this.createNewCommitLogFile(topicName, commitLogModel);
+            CommitLogFilePath newCommitLogFile = this.createNewCommitLogFile(topicName, commitLogModel);
+            commitLogModel.setOffsetLimit(Long.valueOf(BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE));
+            commitLogModel.setOffset(new AtomicLong(0));
+            commitLogModel.setFileName(newCommitLogFile.getFileName());
 
-            this.doMMap(newFilePath, 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+            this.doMMap(newCommitLogFile.getFilePath(), 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
         }
 
     }

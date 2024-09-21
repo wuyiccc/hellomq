@@ -150,15 +150,6 @@ public class MMapUtils {
     }
 
 
-    //public static void main(String[] args) throws IOException, InterruptedException {
-    //    MMapUtils mMapUtils = new MMapUtils();
-    //
-    //    mMapUtils.loadFileInMMap("./doc/test.txt", 0, 1 * 1024 * 1024);
-    //
-    //    mMapUtils.clear();
-    //
-    //
-    //}
 
 
 }
