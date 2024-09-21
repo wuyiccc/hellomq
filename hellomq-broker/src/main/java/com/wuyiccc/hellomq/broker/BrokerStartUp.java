@@ -32,6 +32,7 @@ public class BrokerStartUp {
         mqTopicLoader = new MqTopicLoader();
         // 加载topic信息
         mqTopicLoader.loadProperties();
+        mqTopicLoader.startRefreshMqTopicInfoTask();
         commitLogAppendHandler = new CommitLogAppendHandler();
 
         Collection<MqTopicModel> mqTopicModelList = CommonCache.getMqTopicModelMap().values();
