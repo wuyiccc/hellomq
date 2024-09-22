@@ -2,10 +2,7 @@ package com.wuyiccc.hellomq.broker.core;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
-import com.wuyiccc.hellomq.broker.model.CommitLogFilePath;
-import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
-import com.wuyiccc.hellomq.broker.model.CommitLogModel;
-import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import com.wuyiccc.hellomq.broker.model.*;
 import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
 import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
 import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
@@ -21,6 +18,7 @@ import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -158,7 +156,9 @@ public class MMapFileModel {
         this.checkCommitLogHasEnableSpace(commitLogMessageModel);
         byte[] bytes = commitLogMessageModel.convertToByte();
         this.mappedByteBuffer.put(bytes);
-        commitLogModel.getOffset().addAndGet(bytes.length);
+        AtomicInteger currentLatestOffset = commitLogModel.getOffset();
+        this.dispatcher(bytes, currentLatestOffset.get());
+        currentLatestOffset.addAndGet(bytes.length);
 
         // 默认刷到pageCache中
         // 如果需要强制刷盘, 这里要兼容
@@ -167,6 +167,27 @@ public class MMapFileModel {
         }
         // unlock()
         putMessageLock.unLock();
+    }
+
+
+    /**
+     * 将consumerQueue文件写入
+     */
+    private void dispatcher(byte[] writeContent, int msgIndex) {
+        MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(topicName);
+        if (mqTopicModel == null) {
+            throw new IllegalArgumentException("topic is undefined");
+        }
+
+        String fileName = mqTopicModel.getCommitLogModel().getFileName();
+
+        ConsumerQueueDetailModel consumerQueueDetailModel = new ConsumerQueueDetailModel();
+        consumerQueueDetailModel.setCommitLogFileName(fileName);
+        consumerQueueDetailModel.setMsgIndex(msgIndex);
+        consumerQueueDetailModel.setMsgLength(writeContent.length);
+
+
+
     }
 
 
@@ -182,7 +203,7 @@ public class MMapFileModel {
             // 0000000000 文件  -> 00000001文件
             CommitLogFilePath newCommitLogFile = this.createNewCommitLogFile(topicName, commitLogModel);
             commitLogModel.setOffsetLimit(Long.valueOf(BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE));
-            commitLogModel.setOffset(new AtomicLong(0));
+            commitLogModel.setOffset(new AtomicInteger(0));
             commitLogModel.setFileName(newCommitLogFile.getFileName());
 
             this.doMMap(newCommitLogFile.getFilePath(), 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
