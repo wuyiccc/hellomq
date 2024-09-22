@@ -66,7 +66,7 @@ public class MMapUtils {
      */
     public byte[] readContent(int readOffset, int size) {
 
-        this.mappedByteBuffer.position(readOffset);
+        //this.mappedByteBuffer.position(readOffset);
         byte[] content = new byte[size];
 
         int j = 0;
@@ -158,34 +158,36 @@ public class MMapUtils {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         MMapUtils mMapUtils = new MMapUtils();
-        mMapUtils.loadFileInMMap("/Users/wuxingyu/work/code_learn/031-opensource/14_hellomq/hellomq/data/broker/store/test_topic/00000000"
+        mMapUtils.loadFileInMMap("/Users/wuxingyu/work/code_learn/031-opensource/14_hellomq/hellomq/data/broker/store/test_topic/test"
                 , 0
                 , BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
         CountDownLatch count = new CountDownLatch(1);
-        CountDownLatch allWriteSuccess = new CountDownLatch(10);
-        for (int i = 0; i < 10; i++) {
-            int finalI = i;
-            Thread task = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        count.await();
-                        mMapUtils.writeContent(("test-content-" + finalI).getBytes(StandardCharsets.UTF_8));
-                        allWriteSuccess.countDown();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            task.start();
-        }
+        //CountDownLatch allWriteSuccess = new CountDownLatch(10);
+        //for (int i = 0; i < 10; i++) {
+        //    int finalI = i;
+        //    Thread task = new Thread(new Runnable() {
+        //        @Override
+        //        public void run() {
+        //            try {
+        //                count.await();
+        //                mMapUtils.writeContent(("test-content-" + finalI).getBytes(StandardCharsets.UTF_8));
+        //                allWriteSuccess.countDown();
+        //            } catch (InterruptedException e) {
+        //                throw new RuntimeException(e);
+        //            }
+        //        }
+        //    });
+        //    task.start();
+        //}
+        //
+        //System.out.println("准备执行并发写入mmap测试");
+        //count.countDown();
+        //allWriteSuccess.await();
+        //System.out.println("并发测试写入完毕");
 
-        System.out.println("准备执行并发写入mmap测试");
-        count.countDown();
-        allWriteSuccess.await();
-        System.out.println("并发测试写入完毕");
+        mMapUtils.writeContent("this is a test".getBytes(StandardCharsets.UTF_8));
 
-        byte[] content = mMapUtils.readContent(0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+        byte[] content = mMapUtils.readContent(1, 1024);
         System.out.println("内容: " + new String(content));
 
     }

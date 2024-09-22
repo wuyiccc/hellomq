@@ -107,7 +107,7 @@ public class MMapFileModel {
      */
     public byte[] readContent(int readOffset, int size) {
 
-        this.mappedByteBuffer.position(readOffset);
+        //this.mappedByteBuffer.position(readOffset);
         byte[] content = new byte[size];
 
         int j = 0;
