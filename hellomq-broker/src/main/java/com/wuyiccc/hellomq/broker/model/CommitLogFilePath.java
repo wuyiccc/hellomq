@@ -6,8 +6,14 @@ package com.wuyiccc.hellomq.broker.model;
  */
 public class CommitLogFilePath {
 
+    /**
+     * commitlog日志文件全路径名称: 包含fileName
+     */
     private String filePath;
 
+    /**
+     * commitlog文件名称
+     */
     private String fileName;
 
 
