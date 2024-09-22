@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 /**
  * @author wuyiccc
  * @date 2024/8/27 22:02
+ * 全局缓存
  */
 public class CommonCache {
 

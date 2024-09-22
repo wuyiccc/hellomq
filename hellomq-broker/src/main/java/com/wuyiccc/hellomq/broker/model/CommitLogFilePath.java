@@ -1,4 +1,4 @@
-package com.wuyiccc.hellomq.broker.core;
+package com.wuyiccc.hellomq.broker.model;
 
 /**
  * @author wuyiccc
