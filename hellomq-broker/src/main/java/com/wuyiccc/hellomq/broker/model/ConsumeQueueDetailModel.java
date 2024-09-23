@@ -4,7 +4,7 @@ package com.wuyiccc.hellomq.broker.model;
  * @author wuyiccc
  * @date 2024/9/22 12:19
  */
-public class ConsumerQueueDetailModel {
+public class ConsumeQueueDetailModel {
 
     private int commitLogIndex;
 

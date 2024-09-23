@@ -180,11 +180,11 @@ public class MMapFileModel {
 
         String fileName = mqTopicModel.getCommitLogModel().getFileName();
 
-        ConsumerQueueDetailModel consumerQueueDetailModel = new ConsumerQueueDetailModel();
+        ConsumeQueueDetailModel consumeQueueDetailModel = new ConsumeQueueDetailModel();
         //consumerQueueDetailModel.setCommitLogFileName(fileName);
-        consumerQueueDetailModel.setCommitLogIndex(Integer.parseInt(fileName));
-        consumerQueueDetailModel.setMsgIndex(msgIndex);
-        consumerQueueDetailModel.setMsgLength(writeContent.length);
+        consumeQueueDetailModel.setCommitLogIndex(Integer.parseInt(fileName));
+        consumeQueueDetailModel.setMsgIndex(msgIndex);
+        consumeQueueDetailModel.setMsgLength(writeContent.length);
 
 
     }
