@@ -21,5 +21,15 @@ public class CommonThreadPoolConfig {
                 return thread;
             });
 
+    // 专门用于将各个消费者的消费进度持久化到磁盘中
+    public static ThreadPoolExecutor refreshConsumeQueueOffsetExecutor = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10),
+            r -> {
+                Thread thread = new Thread(r);
+                thread.setName("refresh-hello-mq-topic-config");
+                return thread;
+            });
+
+
+
 
 }
