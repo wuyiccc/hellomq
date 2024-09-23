@@ -2,6 +2,7 @@ package com.wuyiccc.hellomq.broker;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.core.CommitLogAppendHandler;
+import com.wuyiccc.hellomq.broker.core.ConsumeQueueAppendHandler;
 import com.wuyiccc.hellomq.broker.loader.ConsumeQueueOffsetLoader;
 import com.wuyiccc.hellomq.broker.loader.GlobalPropertiesLoader;
 import com.wuyiccc.hellomq.broker.loader.MqTopicLoader;
@@ -27,6 +28,8 @@ public class BrokerStartUp {
 
     private static ConsumeQueueOffsetLoader consumeQueueOffsetLoader;
 
+    private static ConsumeQueueAppendHandler consumeQueueAppendHandler;
+
     private static void initProperties() throws IOException {
 
         globalPropertiesLoader = new GlobalPropertiesLoader();
@@ -40,12 +43,14 @@ public class BrokerStartUp {
         consumeQueueOffsetLoader.loadProperties();
         consumeQueueOffsetLoader.startRefreshConsumeQueueInfoTask();
         commitLogAppendHandler = new CommitLogAppendHandler();
+        consumeQueueAppendHandler = new ConsumeQueueAppendHandler();
 
         Collection<MqTopicModel> mqTopicModelList = CommonCache.getMqTopicModelMap().values();
 
         for (MqTopicModel mqTopicModel : mqTopicModelList) {
             String topicName = mqTopicModel.getTopic();
             commitLogAppendHandler.prepareMMapLoading(topicName);
+            consumeQueueAppendHandler.prepareMMapLoading(topicName);
         }
     }
 
