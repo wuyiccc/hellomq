@@ -1,7 +1,6 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.model.ConsumeQueueDetailModel;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
@@ -23,7 +22,6 @@ public class CommonCache {
     private static List<MqTopicModel> mqTopicModelList = new ArrayList<>();
 
     private static ConsumeQueueOffsetModel consumeQueueDetailModel = new ConsumeQueueOffsetModel();
-
 
 
     public static GlobalProperties getGlobalProperties() {
