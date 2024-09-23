@@ -30,7 +30,6 @@ public class CommitLogAppendHandler {
         }
 
         CommitLogMessageModel commitLogMessageModel = new CommitLogMessageModel();
-        commitLogMessageModel.setSize(content.length);
         commitLogMessageModel.setContent(content);
 
         mMapFileModel.writeContent(commitLogMessageModel);

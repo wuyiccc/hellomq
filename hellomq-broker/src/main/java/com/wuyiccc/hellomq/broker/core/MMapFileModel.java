@@ -19,7 +19,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author wuyiccc
@@ -182,13 +181,14 @@ public class MMapFileModel {
         String fileName = mqTopicModel.getCommitLogModel().getFileName();
 
         ConsumerQueueDetailModel consumerQueueDetailModel = new ConsumerQueueDetailModel();
-        consumerQueueDetailModel.setCommitLogFileName(fileName);
+        //consumerQueueDetailModel.setCommitLogFileName(fileName);
+        consumerQueueDetailModel.setCommitLogIndex(Integer.parseInt(fileName));
         consumerQueueDetailModel.setMsgIndex(msgIndex);
         consumerQueueDetailModel.setMsgLength(writeContent.length);
 
 
-
     }
+
 
 
     private void checkCommitLogHasEnableSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
@@ -198,7 +198,7 @@ public class MMapFileModel {
         CommitLogModel commitLogModel = mqTopicModel.getCommitLogModel();
         long writeAbleOffsetNum = commitLogModel.countDiff();
 
-        if (writeAbleOffsetNum < commitLogMessageModel.getSize()) {
+        if (writeAbleOffsetNum < commitLogMessageModel.convertToByte().length) {
             // 空间不足需要创建新的commitLog文件并且做映射
             // 0000000000 文件  -> 00000001文件
             CommitLogFilePath newCommitLogFile = this.createNewCommitLogFile(topicName, commitLogModel);

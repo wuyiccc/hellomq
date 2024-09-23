@@ -6,27 +6,27 @@ package com.wuyiccc.hellomq.broker.model;
  */
 public class ConsumerQueueDetailModel {
 
-    private String commitLogFileName;
+    private int commitLogIndex;
 
-    private long msgIndex;
+    private int msgIndex;
 
 
     private int msgLength;
 
 
-    public String getCommitLogFileName() {
-        return commitLogFileName;
+    public int getCommitLogIndex() {
+        return commitLogIndex;
     }
 
-    public void setCommitLogFileName(String commitLogFileName) {
-        this.commitLogFileName = commitLogFileName;
+    public void setCommitLogIndex(int commitLogIndex) {
+        this.commitLogIndex = commitLogIndex;
     }
 
-    public long getMsgIndex() {
+    public int getMsgIndex() {
         return msgIndex;
     }
 
-    public void setMsgIndex(long msgIndex) {
+    public void setMsgIndex(int msgIndex) {
         this.msgIndex = msgIndex;
     }
 

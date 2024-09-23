@@ -3,17 +3,21 @@ package com.wuyiccc.hellomq.broker.model;
 /**
  * @author wuyiccc
  * @date 2024/8/27 23:45
+ * <p>
+ * 队列模型数据
  */
 public class QueueModel {
 
     private Integer id;
 
+    private String fileName;
 
-    private Long minOffset;
 
-    private Long maxOffset;
+    private Integer offsetLimit;
 
-    private Long currentOffset;
+    private Integer latestOffset;
+
+    private Integer lastOffset;
 
     public Integer getId() {
         return id;
@@ -23,37 +27,35 @@ public class QueueModel {
         this.id = id;
     }
 
-    public Long getMinOffset() {
-        return minOffset;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setMinOffset(Long minOffset) {
-        this.minOffset = minOffset;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public Long getMaxOffset() {
-        return maxOffset;
+    public Integer getOffsetLimit() {
+        return offsetLimit;
     }
 
-    public void setMaxOffset(Long maxOffset) {
-        this.maxOffset = maxOffset;
+    public void setOffsetLimit(Integer offsetLimit) {
+        this.offsetLimit = offsetLimit;
     }
 
-    public Long getCurrentOffset() {
-        return currentOffset;
+    public Integer getLatestOffset() {
+        return latestOffset;
     }
 
-    public void setCurrentOffset(Long currentOffset) {
-        this.currentOffset = currentOffset;
+    public void setLatestOffset(Integer latestOffset) {
+        this.latestOffset = latestOffset;
     }
 
-    @Override
-    public String toString() {
-        return "QueueModel{" +
-                "id=" + id +
-                ", minOffset=" + minOffset +
-                ", maxOffset=" + maxOffset +
-                ", currentOffset=" + currentOffset +
-                '}';
+    public Integer getLastOffset() {
+        return lastOffset;
+    }
+
+    public void setLastOffset(Integer lastOffset) {
+        this.lastOffset = lastOffset;
     }
 }

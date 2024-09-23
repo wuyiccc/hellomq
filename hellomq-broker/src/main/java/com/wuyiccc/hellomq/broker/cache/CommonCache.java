@@ -1,6 +1,7 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
+import com.wuyiccc.hellomq.broker.model.ConsumerQueueDetailModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class CommonCache {
 
 
     private static List<MqTopicModel> mqTopicModelList = new ArrayList<>();
+
+    private static ConsumerQueueDetailModel consumerQueueDetailModel = new ConsumerQueueDetailModel();
+
 
 
     public static GlobalProperties getGlobalProperties() {
@@ -40,5 +44,13 @@ public class CommonCache {
 
     public static List<MqTopicModel> getMqTopicModelList() {
         return mqTopicModelList;
+    }
+
+    public static ConsumerQueueDetailModel getConsumerQueueDetailModel() {
+        return consumerQueueDetailModel;
+    }
+
+    public static void setConsumerQueueDetailModel(ConsumerQueueDetailModel consumerQueueDetailModel) {
+        CommonCache.consumerQueueDetailModel = consumerQueueDetailModel;
     }
 }
