@@ -1,7 +1,6 @@
 package com.wuyiccc.hellomq.broker.core;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
-import com.wuyiccc.hellomq.broker.model.CommitLogFilePath;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.model.QueueModel;
 import com.wuyiccc.hellomq.broker.utils.LogFileNameUtils;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.security.PublicKey;
 import java.util.List;
 
 /**
@@ -121,4 +119,77 @@ public class ConsumeQueueMMapFileModel {
         return newFilePath;
     }
 
+    public void writeContent(byte[] content, boolean force) {
+
+        try {
+            putMessageLock.lock();
+            mappedByteBuffer.put(content);
+            if (force) {
+                mappedByteBuffer.force();
+            }
+        } finally {
+            putMessageLock.unLock();
+        }
+    }
+
+    public void writeContent(byte[] content) {
+
+        writeContent(content, false);
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public MappedByteBuffer getMappedByteBuffer() {
+        return mappedByteBuffer;
+    }
+
+    public void setMappedByteBuffer(MappedByteBuffer mappedByteBuffer) {
+        this.mappedByteBuffer = mappedByteBuffer;
+    }
+
+    public FileChannel getFileChannel() {
+        return fileChannel;
+    }
+
+    public void setFileChannel(FileChannel fileChannel) {
+        this.fileChannel = fileChannel;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public Integer getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(Integer queueId) {
+        this.queueId = queueId;
+    }
+
+    public String getConsumeQueueFileName() {
+        return consumeQueueFileName;
+    }
+
+    public void setConsumeQueueFileName(String consumeQueueFileName) {
+        this.consumeQueueFileName = consumeQueueFileName;
+    }
+
+    public PutMessageLock getPutMessageLock() {
+        return putMessageLock;
+    }
+
+    public void setPutMessageLock(PutMessageLock putMessageLock) {
+        this.putMessageLock = putMessageLock;
+    }
 }

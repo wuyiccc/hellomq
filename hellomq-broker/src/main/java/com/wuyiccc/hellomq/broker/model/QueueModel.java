@@ -1,5 +1,7 @@
 package com.wuyiccc.hellomq.broker.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author wuyiccc
  * @date 2024/8/27 23:45
@@ -15,7 +17,7 @@ public class QueueModel {
 
     private Integer offsetLimit;
 
-    private Integer latestOffset;
+    private AtomicInteger latestOffset;
 
     private Integer lastOffset;
 
@@ -43,11 +45,11 @@ public class QueueModel {
         this.offsetLimit = offsetLimit;
     }
 
-    public Integer getLatestOffset() {
+    public AtomicInteger getLatestOffset() {
         return latestOffset;
     }
 
-    public void setLatestOffset(Integer latestOffset) {
+    public void setLatestOffset(AtomicInteger latestOffset) {
         this.latestOffset = latestOffset;
     }
 
@@ -61,6 +63,6 @@ public class QueueModel {
 
     public int countDiff() {
 
-        return this.offsetLimit - this.latestOffset;
+        return this.offsetLimit - this.latestOffset.get();
     }
 }

@@ -1,6 +1,7 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
+import com.wuyiccc.hellomq.broker.core.ConsumeQueueMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 
@@ -23,6 +24,7 @@ public class CommonCache {
 
     private static ConsumeQueueOffsetModel consumeQueueDetailModel = new ConsumeQueueOffsetModel();
 
+    private static ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager;
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -52,5 +54,13 @@ public class CommonCache {
 
     public static void setConsumeQueueDetailModel(ConsumeQueueOffsetModel consumeQueueDetailModel) {
         CommonCache.consumeQueueDetailModel = consumeQueueDetailModel;
+    }
+
+    public static ConsumeQueueMMapFileModelManager getConsumeQueueMMapFileModelManager() {
+        return consumeQueueMMapFileModelManager;
+    }
+
+    public static void setConsumeQueueMMapFileModelManager(ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager) {
+        CommonCache.consumeQueueMMapFileModelManager = consumeQueueMMapFileModelManager;
     }
 }

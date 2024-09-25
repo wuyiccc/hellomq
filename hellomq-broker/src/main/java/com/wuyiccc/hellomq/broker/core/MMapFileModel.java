@@ -17,6 +17,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -178,14 +179,25 @@ public class MMapFileModel {
             throw new IllegalArgumentException("topic is undefined");
         }
 
+        // todo(wuyiccc): queueId这些暂时写死
+        int queueId = 0;
+
         String fileName = mqTopicModel.getCommitLogModel().getFileName();
 
         ConsumeQueueDetailModel consumeQueueDetailModel = new ConsumeQueueDetailModel();
         consumeQueueDetailModel.setCommitLogFileName(Integer.parseInt(fileName));
         consumeQueueDetailModel.setMsgIndex(msgIndex);
         consumeQueueDetailModel.setMsgLength(writeContent.length);
+        byte[] content = consumeQueueDetailModel.convertToBytes();
+        List<ConsumeQueueMMapFileModel> queueModelList = CommonCache.getConsumeQueueMMapFileModelManager().get(topicName);
+        ConsumeQueueMMapFileModel consumeQueueMMapFileModel = queueModelList.stream()
+                .filter(queueModel -> queueModel.getQueueId().equals(queueId))
+                .findFirst().orElse(null);
+        consumeQueueMMapFileModel.writeContent(content);
 
-
+        // 刷新offset
+        QueueModel queueModel = mqTopicModel.getQueueList().get(queueId);
+        queueModel.getLatestOffset().addAndGet(content.length);
     }
 
 
