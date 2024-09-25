@@ -4,13 +4,12 @@ import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 
 import java.io.File;
-import java.util.SplittableRandom;
 
 /**
  * @author wuyiccc
  * @date 2024/8/31 17:32
  */
-public class CommitLogFileNameUtils {
+public class LogFileNameUtils {
 
     private static final Integer defaultCommitLogFileNameLen = 8;
 
@@ -29,12 +28,30 @@ public class CommitLogFileNameUtils {
     public static String buildCommitLogFilePath(String topicName, String commitLogFileName) {
 
         return CommonCache.getGlobalProperties().getHelloMqHome()
-                + BrokerConstants.BASE_STORE_PATH
-                 + topicName
+                + BrokerConstants.BASE_COMMIT_LOG_PATH
+                + topicName
                 + File.separator
                 + commitLogFileName;
     }
 
+    /**
+     * 构建consumeQueue文件路径
+     */
+    public static String buildConsumeQueueFilePath(String topicName, Integer queueId, String fileName) {
+
+        return CommonCache.getGlobalProperties().getHelloMqHome()
+                + BrokerConstants.BASE_CONSUME_QUEUE_PATH
+                + topicName
+                + File.separator
+                + queueId
+                + File.separator
+                + fileName;
+    }
+
+
+    public static String incrConsumeQueueFileName(String oldFileName) {
+        return incrCommitLogFileName(oldFileName);
+    }
 
     /**
      * 根据旧的commitLog文件名生成新的commitLog文件名

@@ -58,4 +58,9 @@ public class QueueModel {
     public void setLastOffset(Integer lastOffset) {
         this.lastOffset = lastOffset;
     }
+
+    public int countDiff() {
+
+        return this.offsetLimit - this.latestOffset;
+    }
 }

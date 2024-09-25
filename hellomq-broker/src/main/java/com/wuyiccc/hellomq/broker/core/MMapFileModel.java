@@ -3,7 +3,7 @@ package com.wuyiccc.hellomq.broker.core;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.*;
-import com.wuyiccc.hellomq.broker.utils.CommitLogFileNameUtils;
+import com.wuyiccc.hellomq.broker.utils.LogFileNameUtils;
 import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
 import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
 
@@ -78,14 +78,14 @@ public class MMapFileModel {
             CommitLogFilePath newCommitLogFile = createNewCommitLogFile(topicName, commitLogModel);
             filePath = newCommitLogFile.getFilePath();
         } else if (diff > 0) {
-            filePath = CommitLogFileNameUtils.buildCommitLogFilePath(topicName, commitLogModel.getFileName());
+            filePath = LogFileNameUtils.buildCommitLogFilePath(topicName, commitLogModel.getFileName());
         }
         return filePath;
     }
 
     private CommitLogFilePath createNewCommitLogFile(String topicName, CommitLogModel commitLogModel) {
-        String newFileName = CommitLogFileNameUtils.incrCommitLogFileName(commitLogModel.getFileName());
-        String newFilePath = CommitLogFileNameUtils.buildCommitLogFilePath(topicName, newFileName);
+        String newFileName = LogFileNameUtils.incrCommitLogFileName(commitLogModel.getFileName());
+        String newFilePath = LogFileNameUtils.buildCommitLogFilePath(topicName, newFileName);
 
         File newCommitLogFile = new File(newFilePath);
         try {
