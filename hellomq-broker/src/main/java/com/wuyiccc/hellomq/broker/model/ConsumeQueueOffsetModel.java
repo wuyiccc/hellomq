@@ -19,20 +19,20 @@ public class ConsumeQueueOffsetModel {
         this.offsetTable = offsetTable;
     }
 
-    private class OffsetTable {
+    public static class OffsetTable {
 
-        private Map<String, ConsumeGroupDetail> topicConsumerGroupDetail;
+        private Map<String, ConsumeGroupDetail> topicConsumerGroupDetailMap;
 
-        public Map<String, ConsumeGroupDetail> getTopicConsumerGroupDetail() {
-            return topicConsumerGroupDetail;
+        public Map<String, ConsumeGroupDetail> getTopicConsumerGroupDetailMap() {
+            return topicConsumerGroupDetailMap;
         }
 
-        public void setTopicConsumerGroupDetail(Map<String, ConsumeGroupDetail> topicConsumerGroupDetail) {
-            this.topicConsumerGroupDetail = topicConsumerGroupDetail;
+        public void setTopicConsumerGroupDetailMap(Map<String, ConsumeGroupDetail> topicConsumerGroupDetailMap) {
+            this.topicConsumerGroupDetailMap = topicConsumerGroupDetailMap;
         }
     }
 
-    private class ConsumeGroupDetail {
+    public static class ConsumeGroupDetail {
 
         private Map<String, Map<String, String>> consumerGroupDetailMap;
 
