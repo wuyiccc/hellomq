@@ -22,7 +22,7 @@ public class CommonCache {
 
     private static List<MqTopicModel> mqTopicModelList = new ArrayList<>();
 
-    private static ConsumeQueueOffsetModel consumeQueueDetailModel = new ConsumeQueueOffsetModel();
+    private static ConsumeQueueOffsetModel consumeQueueOffsetModel = new ConsumeQueueOffsetModel();
 
     private static ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager;
 
@@ -48,12 +48,12 @@ public class CommonCache {
     }
 
 
-    public static ConsumeQueueOffsetModel getConsumeQueueDetailModel() {
-        return consumeQueueDetailModel;
+    public static ConsumeQueueOffsetModel getConsumeQueueOffsetModel() {
+        return consumeQueueOffsetModel;
     }
 
-    public static void setConsumeQueueDetailModel(ConsumeQueueOffsetModel consumeQueueDetailModel) {
-        CommonCache.consumeQueueDetailModel = consumeQueueDetailModel;
+    public static void setConsumeQueueOffsetModel(ConsumeQueueOffsetModel consumeQueueOffsetModel) {
+        CommonCache.consumeQueueOffsetModel = consumeQueueOffsetModel;
     }
 
     public static ConsumeQueueMMapFileModelManager getConsumeQueueMMapFileModelManager() {

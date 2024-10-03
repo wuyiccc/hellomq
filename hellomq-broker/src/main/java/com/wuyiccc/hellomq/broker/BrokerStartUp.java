@@ -64,6 +64,7 @@ public class BrokerStartUp {
         for (int i = 0; i < 50000; i++) {
             commitLogAppendHandler.appendMsg(topic, ("this is content" + i).getBytes(StandardCharsets.UTF_8));
             System.out.println("写入数据");
+            
             TimeUnit.MILLISECONDS.sleep(1);
         }
         //commitLogAppendHandler.readMsg(topic);
