@@ -12,7 +12,9 @@ import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author wuyiccc
@@ -66,18 +68,61 @@ public class BrokerStartUp {
         initProperties();
 
         String topic = "test_topic";
-        String consumerGroup = "test_service_group";
+        String userServiceConsumerGroup = "user_service_group";
+        String orderServiceConsumeGroup = "order_service_group";
+
+        new Thread(() -> {
+            while (true) {
+                byte[] content = consumeQueueConsumeHandler.consume(topic, userServiceConsumerGroup, 0);
+                if (content != null && content.length != 0) {
+                    System.out.println(userServiceConsumerGroup + ", 消费内容: " + new String(content));
+                    consumeQueueConsumeHandler.ack(topic, userServiceConsumerGroup, 0);
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(() -> {
+            while (true) {
+                byte[] content = consumeQueueConsumeHandler.consume(topic, orderServiceConsumeGroup, 0);
+                if (content != null && content.length != 0) {
+                    System.out.println(orderServiceConsumeGroup + ", 消费内容: " + new String(content));
+                    consumeQueueConsumeHandler.ack(topic, orderServiceConsumeGroup, 0);
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+
+        AtomicInteger i = new AtomicInteger();
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            while (true) {
+                try {
+                    commitLogAppendHandler.appendMsg(topic, ("message_" + (i.getAndIncrement())).getBytes(StandardCharsets.UTF_8));
+                    TimeUnit.MILLISECONDS.sleep(200);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
-        for (int i = 0; i < 50000; i++) {
-            //commitLogAppendHandler.appendMsg(topic, ("this is content " + i).getBytes(StandardCharsets.UTF_8));
-            System.out.println("写入数据");
+        }).start();
 
-            byte[] content = consumeQueueConsumeHandler.consume(topic, consumerGroup, 0);
-            System.out.println("消费数据 " + new String(content));
-            consumeQueueConsumeHandler.ack(topic, consumerGroup, 0);
-            TimeUnit.MILLISECONDS.sleep(100);
-        }
-        //commitLogAppendHandler.readMsg(topic);
     }
 }

@@ -232,6 +232,9 @@ public class CommitLogMMapFileModel {
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
         this.readByteBuffer = mappedByteBuffer.slice();
+        MqTopicModel mqTopicModel = CommonCache.getMqTopicModelMap().get(topicName);
+        // 末尾数据追加
+        this.mappedByteBuffer.position(mqTopicModel.getCommitLogModel().getOffset().get());
     }
 
     /**

@@ -10,6 +10,7 @@ import com.wuyiccc.hellomq.broker.utils.JsonUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author wuyiccc
@@ -56,6 +57,11 @@ public class ConsumeQueueConsumeHandler {
         String[] offsetStrArr = offsetStrInfo.split("#");
         String consumeQueueFileName = offsetStrArr[0];
         Integer consumeQueueOffset = Integer.valueOf(offsetStrArr[1]);
+        QueueModel queueModel = mqTopicModel.getQueueList().get(queueId);
+        // 消费到了尽头
+        if (queueModel.getLatestOffset().get() <= consumeQueueOffset) {
+            return null;
+        }
 
 
         // 拿到queueId对应的ConsumeQueue对应的mmap映射对象
@@ -81,17 +87,23 @@ public class ConsumeQueueConsumeHandler {
     public boolean ack(String topic, String consumeGroup, Integer queueId) {
 
 
-        ConsumeQueueOffsetModel.OffsetTable offsetTable = CommonCache.getConsumeQueueOffsetModel().getOffsetTable();
-        Map<String, ConsumeQueueOffsetModel.ConsumeGroupDetail> topicConsumerGroupDetailMap = offsetTable.getTopicConsumerGroupDetailMap();
-        ConsumeQueueOffsetModel.ConsumeGroupDetail consumeGroupDetail = topicConsumerGroupDetailMap.get(topic);
-        Map<String, String> consumeQueueOffsetDetailMap = consumeGroupDetail.getConsumerGroupDetailMap().get(consumeGroup);
-        String offsetStrInfo = consumeQueueOffsetDetailMap.get(String.valueOf(queueId));
-        String[] offsetStrArr = offsetStrInfo.split("#");
-        String fileName = offsetStrArr[0];
-        int currentOffset = Integer.parseInt(offsetStrArr[1]);
-        currentOffset += 12;
-        consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + "#" + currentOffset);
-        return true;
+        try {
+            ConsumeQueueOffsetModel.OffsetTable offsetTable = CommonCache.getConsumeQueueOffsetModel().getOffsetTable();
+            Map<String, ConsumeQueueOffsetModel.ConsumeGroupDetail> topicConsumerGroupDetailMap = offsetTable.getTopicConsumerGroupDetailMap();
+            ConsumeQueueOffsetModel.ConsumeGroupDetail consumeGroupDetail = topicConsumerGroupDetailMap.get(topic);
+            Map<String, String> consumeQueueOffsetDetailMap = consumeGroupDetail.getConsumerGroupDetailMap().get(consumeGroup);
+            String offsetStrInfo = consumeQueueOffsetDetailMap.get(String.valueOf(queueId));
+            String[] offsetStrArr = offsetStrInfo.split("#");
+            String fileName = offsetStrArr[0];
+            int currentOffset = Integer.parseInt(offsetStrArr[1]);
+            currentOffset += 12;
+            consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + "#" + currentOffset);
+
+        } catch (Exception e) {
+            System.err.println("ack操作异常");
+            e.printStackTrace();
+        }
+       return true;
     }
 
 }

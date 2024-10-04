@@ -60,6 +60,7 @@ public class ConsumeQueueMMapFileModel {
     public void loadFileInMMap(String topicName
             , Integer queueId
             , int startOffset
+            , int latestWriteOffset
             , int mappedSize
     ) throws IOException {
 
@@ -67,12 +68,12 @@ public class ConsumeQueueMMapFileModel {
         this.queueId = queueId;
         String filePath = getLatestCommitLogFile();
 
-        this.doMMap(filePath, startOffset, mappedSize);
+        this.doMMap(filePath, startOffset, latestWriteOffset, mappedSize);
 
         this.putMessageLock = new UnfairReentrantLock();
     }
 
-    private void doMMap(String filePath, int startOffset, int mappedSize) throws IOException {
+    private void doMMap(String filePath, int startOffset, int latestWriteOffset, int mappedSize) throws IOException {
         file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("filePath is " + filePath + " inValid");
@@ -80,6 +81,7 @@ public class ConsumeQueueMMapFileModel {
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
         this.readBuffer = mappedByteBuffer.slice();
+        this.mappedByteBuffer.position(latestWriteOffset);
     }
 
 
