@@ -66,19 +66,32 @@ public class ConsumeQueueConsumeHandler {
         ConsumeQueueDetailModel consumeQueueDetailModel = new ConsumeQueueDetailModel();
         consumeQueueDetailModel.buildFromBytes(content);
 
-        System.out.println(JsonUtils.objectToJson(consumeQueueDetailModel));
+
+        CommitLogMMapFileModel commitLogMMapFileModel = CommonCache.getCommitLogMMapFileModelManager().get(topic);
+        byte[] bytes = commitLogMMapFileModel.readContent(consumeQueueDetailModel.getMsgIndex(), consumeQueueDetailModel.getMsgLength());
 
 
-        // 获取当前匹配队列的mmap对象
-        return null;
+        return bytes;
     }
 
 
     /**
      * 更新consumeQueue-offset的值
      */
-    public boolean ack() {
+    public boolean ack(String topic, String consumeGroup, Integer queueId) {
 
+
+        ConsumeQueueOffsetModel.OffsetTable offsetTable = CommonCache.getConsumeQueueOffsetModel().getOffsetTable();
+        Map<String, ConsumeQueueOffsetModel.ConsumeGroupDetail> topicConsumerGroupDetailMap = offsetTable.getTopicConsumerGroupDetailMap();
+        ConsumeQueueOffsetModel.ConsumeGroupDetail consumeGroupDetail = topicConsumerGroupDetailMap.get(topic);
+        Map<String, String> consumeQueueOffsetDetailMap = consumeGroupDetail.getConsumerGroupDetailMap().get(consumeGroup);
+        String offsetStrInfo = consumeQueueOffsetDetailMap.get(String.valueOf(queueId));
+        String[] offsetStrArr = offsetStrInfo.split("#");
+        String fileName = offsetStrArr[0];
+        int currentOffset = Integer.parseInt(offsetStrArr[1]);
+        currentOffset += 12;
+        consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + "#" + currentOffset);
         return true;
     }
+
 }

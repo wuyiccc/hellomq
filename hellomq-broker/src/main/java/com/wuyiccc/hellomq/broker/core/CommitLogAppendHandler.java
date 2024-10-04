@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.broker.core;
 
+import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 
@@ -12,37 +13,26 @@ import java.util.Objects;
  */
 public class CommitLogAppendHandler {
 
-    private MMapFileModelManager mMapFileModelManager = new MMapFileModelManager();
 
 
     public void prepareMMapLoading(String topicName) throws IOException {
 
-        MMapFileModel mMapFileModel = new MMapFileModel();
-        mMapFileModel.loadFileInMMap(topicName, 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
-        this.mMapFileModelManager.put(topicName, mMapFileModel);
+        CommitLogMMapFileModel commitLogMMapFileModel = new CommitLogMMapFileModel();
+        commitLogMMapFileModel.loadFileInMMap(topicName, 0, BrokerConstants.COMMITLOG_DEFAULT_MMAP_SIZE);
+        CommonCache.getCommitLogMMapFileModelManager().put(topicName, commitLogMMapFileModel);
     }
 
     public void appendMsg(String topic, byte[] content) throws IOException {
 
-        MMapFileModel mMapFileModel = this.mMapFileModelManager.get(topic);
-        if (Objects.isNull(mMapFileModel)) {
+        CommitLogMMapFileModel commitLogMMapFileModel = CommonCache.getCommitLogMMapFileModelManager().get(topic);
+        if (Objects.isNull(commitLogMMapFileModel)) {
             throw new RuntimeException("topic is invalid");
         }
 
         CommitLogMessageModel commitLogMessageModel = new CommitLogMessageModel();
         commitLogMessageModel.setContent(content);
 
-        mMapFileModel.writeContent(commitLogMessageModel);
-    }
-
-    public void readMsg(String topic) {
-
-        MMapFileModel mMapFileModel = mMapFileModelManager.get(topic);
-        if (Objects.isNull(mMapFileModel)) {
-            throw new RuntimeException("topic is invalid");
-        }
-        byte[] content = mMapFileModel.readContent(0, 1000);
-        System.out.println(new String(content));
+        commitLogMMapFileModel.writeContent(commitLogMessageModel);
     }
 
 

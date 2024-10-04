@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author wuyiccc
@@ -28,10 +29,24 @@ public class JsonUtils {
      * @return json字符串
      */
     public static String objectToJson(Object data) {
-        try {
-            return MAPPER.writeValueAsString(data);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+
+        return objectToJson(data, false);
+    }
+
+    public static String objectToJson(Object data, boolean format) {
+
+        if (format) {
+            try {
+                return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                return MAPPER.writeValueAsString(data);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

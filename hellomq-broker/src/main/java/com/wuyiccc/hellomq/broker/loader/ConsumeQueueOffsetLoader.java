@@ -52,7 +52,7 @@ public class ConsumeQueueOffsetLoader {
                         System.out.println("consume-queue-offset 刷盘中");
                         // 刷盘
                         ConsumeQueueOffsetModel consumeQueueDetailModel = CommonCache.getConsumeQueueOffsetModel();
-                        FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(consumeQueueDetailModel));
+                        FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(consumeQueueDetailModel, true));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wuyiccc
@@ -15,13 +17,13 @@ public class TestMMapUtils {
     private MMapUtils mMapUtils;
 
     private static final String filePath = "../data/broker/store/test_topic/0000000";
-
-    @Before
-    public void setUp() throws IOException {
-        mMapUtils = new MMapUtils();
-        this.mMapUtils.loadFileInMMap(filePath, 0, 100 * 1024);
-    }
-
+    //
+    //@Before
+    //public void setUp() throws IOException {
+    //    mMapUtils = new MMapUtils();
+    //    this.mMapUtils.loadFileInMMap(filePath, 0, 100 * 1024);
+    //}
+    //
     @Test
     public void testLoadFile() throws IOException {
 

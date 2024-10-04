@@ -3,6 +3,7 @@ package com.wuyiccc.hellomq.broker.core;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.*;
+import com.wuyiccc.hellomq.broker.utils.JsonUtils;
 import com.wuyiccc.hellomq.broker.utils.LogFileNameUtils;
 import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
 import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2024/8/25 21:35
  * 最基础的mmap对象模型
  */
-public class MMapFileModel {
+public class CommitLogMMapFileModel {
 
     /**
      * 映射的文件
@@ -40,6 +41,8 @@ public class MMapFileModel {
     private String topicName;
 
     private PutMessageLock putMessageLock;
+
+    private ByteBuffer readByteBuffer;
 
     /**
      * 指定offset做文件的映射
@@ -100,23 +103,14 @@ public class MMapFileModel {
 
     /**
      * 支持从文件的指定offset开始读取内容
-     *
-     * @param readOffset 开始位置
-     * @param size       内容大小
      */
-    public byte[] readContent(int readOffset, int size) {
+    public byte[] readContent(int pos, int len) {
 
-        //this.mappedByteBuffer.position(readOffset);
-        byte[] content = new byte[size];
-
-        int j = 0;
-        for (int i = 0; i < size; i++) {
-            // 这里是从内存中访问
-            byte b = this.mappedByteBuffer.get(readOffset + i);
-            content[j++] = b;
-        }
-
-        return content;
+        ByteBuffer readBuf = readByteBuffer.slice();
+        readBuf.position(pos);
+        byte[] readBytes = new byte[len];
+        readBuf.get(readBytes);
+        return readBytes;
     }
 
     /**
@@ -188,7 +182,10 @@ public class MMapFileModel {
         consumeQueueDetailModel.setCommitLogFileName(Integer.parseInt(fileName));
         consumeQueueDetailModel.setMsgIndex(msgIndex);
         consumeQueueDetailModel.setMsgLength(writeContent.length);
+        System.out.println("写入consumequeue内容: " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
         byte[] content = consumeQueueDetailModel.convertToBytes();
+        consumeQueueDetailModel.buildFromBytes(content);
+        System.out.println("byte convert is : " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
         List<ConsumeQueueMMapFileModel> queueModelList = CommonCache.getConsumeQueueMMapFileModelManager().get(topicName);
         ConsumeQueueMMapFileModel consumeQueueMMapFileModel = queueModelList.stream()
                 .filter(queueModel -> queueModel.getQueueId().equals(queueId))
@@ -234,6 +231,7 @@ public class MMapFileModel {
         }
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
+        this.readByteBuffer = mappedByteBuffer.slice();
     }
 
     /**

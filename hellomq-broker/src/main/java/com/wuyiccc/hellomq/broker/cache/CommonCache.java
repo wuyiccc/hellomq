@@ -1,6 +1,7 @@
 package com.wuyiccc.hellomq.broker.cache;
 
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
+import com.wuyiccc.hellomq.broker.core.CommitLogMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.core.ConsumeQueueMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
@@ -24,7 +25,9 @@ public class CommonCache {
 
     private static ConsumeQueueOffsetModel consumeQueueOffsetModel = new ConsumeQueueOffsetModel();
 
-    private static ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager;
+    private static ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager = new ConsumeQueueMMapFileModelManager();
+
+    private static CommitLogMMapFileModelManager commitLogMMapFileModelManager = new CommitLogMMapFileModelManager();
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -62,5 +65,13 @@ public class CommonCache {
 
     public static void setConsumeQueueMMapFileModelManager(ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager) {
         CommonCache.consumeQueueMMapFileModelManager = consumeQueueMMapFileModelManager;
+    }
+
+    public static CommitLogMMapFileModelManager getCommitLogMMapFileModelManager() {
+        return commitLogMMapFileModelManager;
+    }
+
+    public static void setCommitLogMMapFileModelManager(CommitLogMMapFileModelManager commitLogMMapFileModelManager) {
+        CommonCache.commitLogMMapFileModelManager = commitLogMMapFileModelManager;
     }
 }

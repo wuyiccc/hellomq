@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class ConsumeQueueAppendHandler {
 
-    private ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager = new ConsumeQueueMMapFileModelManager();
 
 
     public void prepareMMapLoading(String topicName) throws IOException {
@@ -34,9 +33,7 @@ public class ConsumeQueueAppendHandler {
             consumeQueueMMapFileModelList.add(consumeQueueMMapFileModel);
         }
 
-        consumeQueueMMapFileModelManager.put(topicName, consumeQueueMMapFileModelList);
-        CommonCache.setConsumeQueueMMapFileModelManager(consumeQueueMMapFileModelManager);
-
+        CommonCache.getConsumeQueueMMapFileModelManager().put(topicName, consumeQueueMMapFileModelList);
     }
 
 

@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.broker.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Map;
  */
 public class ConsumeQueueOffsetModel {
 
-    private OffsetTable offsetTable;
+    private OffsetTable offsetTable = new OffsetTable();
 
 
     public OffsetTable getOffsetTable() {
@@ -21,7 +22,7 @@ public class ConsumeQueueOffsetModel {
 
     public static class OffsetTable {
 
-        private Map<String, ConsumeGroupDetail> topicConsumerGroupDetailMap;
+        private Map<String, ConsumeGroupDetail> topicConsumerGroupDetailMap = new HashMap<>();
 
         public Map<String, ConsumeGroupDetail> getTopicConsumerGroupDetailMap() {
             return topicConsumerGroupDetailMap;
@@ -34,7 +35,7 @@ public class ConsumeQueueOffsetModel {
 
     public static class ConsumeGroupDetail {
 
-        private Map<String, Map<String, String>> consumerGroupDetailMap;
+        private Map<String, Map<String, String>> consumerGroupDetailMap = new HashMap<>();
 
         public Map<String, Map<String, String>> getConsumerGroupDetailMap() {
             return consumerGroupDetailMap;

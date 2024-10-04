@@ -70,10 +70,12 @@ public class BrokerStartUp {
 
 
         for (int i = 0; i < 50000; i++) {
-            //commitLogAppendHandler.appendMsg(topic, ("this is content" + i).getBytes(StandardCharsets.UTF_8));
-            //System.out.println("写入数据");
+            //commitLogAppendHandler.appendMsg(topic, ("this is content " + i).getBytes(StandardCharsets.UTF_8));
+            System.out.println("写入数据");
 
-            consumeQueueConsumeHandler.consume(topic, consumerGroup, 0);
+            byte[] content = consumeQueueConsumeHandler.consume(topic, consumerGroup, 0);
+            System.out.println("消费数据 " + new String(content));
+            consumeQueueConsumeHandler.ack(topic, consumerGroup, 0);
             TimeUnit.MILLISECONDS.sleep(100);
         }
         //commitLogAppendHandler.readMsg(topic);

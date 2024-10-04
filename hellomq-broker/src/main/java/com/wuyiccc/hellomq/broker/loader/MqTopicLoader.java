@@ -52,7 +52,7 @@ public class MqTopicLoader {
                         System.out.println("commitlog刷盘中");
                         // 刷盘
                         List<MqTopicModel> topicModelList = CommonCache.getMqTopicModelList();
-                        FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(topicModelList));
+                        FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(topicModelList, true));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
