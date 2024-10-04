@@ -6,6 +6,14 @@ package com.wuyiccc.hellomq.broker.utils;
  */
 public class ByteConvertUtils {
 
+    public static byte[] readInPos(byte[] source, int pos, int len) {
+
+        byte[] result = new byte[len];
+        for (int i = pos, j = 0; i < pos + len; i++) {
+            result[j++] = source[i];
+        }
+        return result;
+    }
 
 
     public static byte[] intToBytes(int value) {

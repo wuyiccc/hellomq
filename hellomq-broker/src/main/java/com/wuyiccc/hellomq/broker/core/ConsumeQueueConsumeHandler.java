@@ -1,9 +1,11 @@
 package com.wuyiccc.hellomq.broker.core;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
+import com.wuyiccc.hellomq.broker.model.ConsumeQueueDetailModel;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.model.QueueModel;
+import com.wuyiccc.hellomq.broker.utils.JsonUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,16 @@ public class ConsumeQueueConsumeHandler {
         String consumeQueueFileName = offsetStrArr[0];
         Integer consumeQueueOffset = Integer.valueOf(offsetStrArr[1]);
 
+
+        // 拿到queueId对应的ConsumeQueue对应的mmap映射对象
+        List<ConsumeQueueMMapFileModel> consumeQueueMMapFileModelList = CommonCache.getConsumeQueueMMapFileModelManager().get(topic);
+        ConsumeQueueMMapFileModel consumeQueueMMapFileModel = consumeQueueMMapFileModelList.get(queueId);
+        byte[] content = consumeQueueMMapFileModel.readContent(consumeQueueOffset);
+
+        ConsumeQueueDetailModel consumeQueueDetailModel = new ConsumeQueueDetailModel();
+        consumeQueueDetailModel.buildFromBytes(content);
+
+        System.out.println(JsonUtils.objectToJson(consumeQueueDetailModel));
 
 
         // 获取当前匹配队列的mmap对象

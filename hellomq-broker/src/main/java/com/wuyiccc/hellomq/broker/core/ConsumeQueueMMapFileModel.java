@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
@@ -41,6 +42,11 @@ public class ConsumeQueueMMapFileModel {
 
     private PutMessageLock putMessageLock;
 
+    private ByteBuffer readBuffer;
+
+
+    // 3 * 4int = 12
+    private final static int CONSUME_CONTENT_READ_LENGTH = 12;
 
     /**
      * 指定offset做文件的映射
@@ -73,6 +79,7 @@ public class ConsumeQueueMMapFileModel {
         }
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
         this.mappedByteBuffer = this.fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappedSize);
+        this.readBuffer = mappedByteBuffer.slice();
     }
 
 
@@ -135,6 +142,15 @@ public class ConsumeQueueMMapFileModel {
     public void writeContent(byte[] content) {
 
         writeContent(content, false);
+    }
+
+    public byte[] readContent(int pos) {
+
+        ByteBuffer readBuf = readBuffer.slice();
+        readBuf.position(pos);
+        byte[] content = new byte[CONSUME_CONTENT_READ_LENGTH];
+        readBuf.get(content);
+        return content;
     }
 
     public File getFile() {

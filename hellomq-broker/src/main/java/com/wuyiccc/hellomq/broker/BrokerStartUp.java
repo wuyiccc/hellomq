@@ -3,6 +3,7 @@ package com.wuyiccc.hellomq.broker;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.core.CommitLogAppendHandler;
 import com.wuyiccc.hellomq.broker.core.ConsumeQueueAppendHandler;
+import com.wuyiccc.hellomq.broker.core.ConsumeQueueConsumeHandler;
 import com.wuyiccc.hellomq.broker.loader.ConsumeQueueOffsetLoader;
 import com.wuyiccc.hellomq.broker.loader.GlobalPropertiesLoader;
 import com.wuyiccc.hellomq.broker.loader.MqTopicLoader;
@@ -30,20 +31,26 @@ public class BrokerStartUp {
 
     private static ConsumeQueueAppendHandler consumeQueueAppendHandler;
 
+    private static ConsumeQueueConsumeHandler consumeQueueConsumeHandler;
+
     private static void initProperties() throws IOException {
 
         globalPropertiesLoader = new GlobalPropertiesLoader();
+        mqTopicLoader = new MqTopicLoader();
+        consumeQueueOffsetLoader = new ConsumeQueueOffsetLoader();
+        consumeQueueConsumeHandler = new ConsumeQueueConsumeHandler();
+        commitLogAppendHandler = new CommitLogAppendHandler();
+        consumeQueueAppendHandler = new ConsumeQueueAppendHandler();
+
         // 加载全局配置文件
         globalPropertiesLoader.loadProperties();
-        mqTopicLoader = new MqTopicLoader();
+
         // 加载topic信息
         mqTopicLoader.loadProperties();
         mqTopicLoader.startRefreshMqTopicInfoTask();
-        consumeQueueOffsetLoader = new ConsumeQueueOffsetLoader();
+
         consumeQueueOffsetLoader.loadProperties();
         consumeQueueOffsetLoader.startRefreshConsumeQueueInfoTask();
-        commitLogAppendHandler = new CommitLogAppendHandler();
-        consumeQueueAppendHandler = new ConsumeQueueAppendHandler();
 
         Collection<MqTopicModel> mqTopicModelList = CommonCache.getMqTopicModelMap().values();
 
@@ -59,13 +66,15 @@ public class BrokerStartUp {
         initProperties();
 
         String topic = "test_topic";
+        String consumerGroup = "test_service_group";
 
 
         for (int i = 0; i < 50000; i++) {
-            commitLogAppendHandler.appendMsg(topic, ("this is content" + i).getBytes(StandardCharsets.UTF_8));
-            System.out.println("写入数据");
-            
-            TimeUnit.MILLISECONDS.sleep(1);
+            //commitLogAppendHandler.appendMsg(topic, ("this is content" + i).getBytes(StandardCharsets.UTF_8));
+            //System.out.println("写入数据");
+
+            consumeQueueConsumeHandler.consume(topic, consumerGroup, 0);
+            TimeUnit.MILLISECONDS.sleep(100);
         }
         //commitLogAppendHandler.readMsg(topic);
     }

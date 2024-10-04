@@ -2,8 +2,6 @@ package com.wuyiccc.hellomq.broker.model;
 
 import com.wuyiccc.hellomq.broker.utils.ByteConvertUtils;
 
-import java.util.Objects;
-
 /**
  * @author wuyiccc
  * @date 2024/9/22 12:19
@@ -63,5 +61,23 @@ public class ConsumeQueueDetailModel {
         }
 
         return finalBytes;
+    }
+
+    public void buildFromBytes(byte[] body) {
+
+        // 0~4 int
+        this.setCommitLogFileName(ByteConvertUtils.bytesToInt(
+                ByteConvertUtils.readInPos(body, 0, 4)
+        ));
+
+        // 4~8 int
+        this.setMsgIndex(ByteConvertUtils.bytesToInt(
+                ByteConvertUtils.readInPos(body, 4, 4)
+        ));
+
+        // 8~12 int
+        this.setMsgLength(ByteConvertUtils.bytesToInt(
+                ByteConvertUtils.readInPos(body, 8, 4)
+        ));
     }
 }
