@@ -29,17 +29,21 @@ public class ConsumeQueueConsumeHandler {
         // 获取当前匹配的对了最新的consumeQueue的offset是多少
         ConsumeQueueOffsetModel.OffsetTable offsetTable = CommonCache.getConsumeQueueOffsetModel().getOffsetTable();
         Map<String, ConsumeQueueOffsetModel.ConsumeGroupDetail> topicConsumerGroupDetailMap = offsetTable.getTopicConsumerGroupDetailMap();
+        // 获取到当前topic对应的消费进度map
         ConsumeQueueOffsetModel.ConsumeGroupDetail consumeGroupDetail = topicConsumerGroupDetailMap.get(topic);
-        // 如果是首次消费
+        // 如果topic没有对应的消费进度信息, 说明是首次消费
         if (consumeGroupDetail == null) {
             consumeGroupDetail = new ConsumeQueueOffsetModel.ConsumeGroupDetail();
             topicConsumerGroupDetailMap.put(topic, consumeGroupDetail);
         }
         Map<String, Map<String, String>> consumerGroupDetailMap = consumeGroupDetail.getConsumerGroupDetailMap();
+        // 获取到消费进度信息里面对应具体消费组的消费信息
         Map<String, String> queueOffsetDetailMap = consumerGroupDetailMap.get(consumeGroup);
+        // 如果消费组的信息为空白, 说明之前没有消费过
         if (queueOffsetDetailMap == null) {
             queueOffsetDetailMap = new HashMap<>();
             List<QueueModel> queueList = mqTopicModel.getQueueList();
+            // 初始化对每个consumeQueue的消费进度数据
             for (QueueModel queueModel : queueList) {
                 queueOffsetDetailMap.put(String.valueOf(queueModel.getId()), "00000000#0");
             }
@@ -50,6 +54,8 @@ public class ConsumeQueueConsumeHandler {
         String[] offsetStrArr = offsetStrInfo.split("#");
         String consumeQueueFileName = offsetStrArr[0];
         Integer consumeQueueOffset = Integer.valueOf(offsetStrArr[1]);
+
+
 
         // 获取当前匹配队列的mmap对象
         return null;
