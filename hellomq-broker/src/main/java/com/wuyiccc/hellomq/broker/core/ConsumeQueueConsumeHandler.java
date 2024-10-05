@@ -5,12 +5,13 @@ import com.wuyiccc.hellomq.broker.model.ConsumeQueueDetailModel;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.model.QueueModel;
-import com.wuyiccc.hellomq.broker.utils.JsonUtils;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author wuyiccc
@@ -18,6 +19,10 @@ import java.util.UUID;
  * 消费队列消费处理器
  */
 public class ConsumeQueueConsumeHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(ConsumeQueueConsumeHandler.class);
+
+
 
     /**
      * 读取当前最新一条consumeQueue的消息内容
@@ -48,13 +53,13 @@ public class ConsumeQueueConsumeHandler {
             List<QueueModel> queueList = mqTopicModel.getQueueList();
             // 初始化对每个consumeQueue的消费进度数据
             for (QueueModel queueModel : queueList) {
-                queueOffsetDetailMap.put(String.valueOf(queueModel.getId()), "00000000#0");
+                queueOffsetDetailMap.put(String.valueOf(queueModel.getId()), BrokerConstants.INITIAL_QUEUE_OFFSET);
             }
             consumerGroupDetailMap.put(consumeGroup, queueOffsetDetailMap);
         }
 
         String offsetStrInfo = queueOffsetDetailMap.get(String.valueOf(queueId));
-        String[] offsetStrArr = offsetStrInfo.split("#");
+        String[] offsetStrArr = offsetStrInfo.split(BrokerConstants.CONSUME_QUEUE_OFFSET_NAME_SPLIT);
         String consumeQueueFileName = offsetStrArr[0];
         Integer consumeQueueOffset = Integer.valueOf(offsetStrArr[1]);
         QueueModel queueModel = mqTopicModel.getQueueList().get(queueId);
@@ -93,14 +98,14 @@ public class ConsumeQueueConsumeHandler {
             ConsumeQueueOffsetModel.ConsumeGroupDetail consumeGroupDetail = topicConsumerGroupDetailMap.get(topic);
             Map<String, String> consumeQueueOffsetDetailMap = consumeGroupDetail.getConsumerGroupDetailMap().get(consumeGroup);
             String offsetStrInfo = consumeQueueOffsetDetailMap.get(String.valueOf(queueId));
-            String[] offsetStrArr = offsetStrInfo.split("#");
+            String[] offsetStrArr = offsetStrInfo.split(BrokerConstants.CONSUME_QUEUE_OFFSET_NAME_SPLIT);
             String fileName = offsetStrArr[0];
             int currentOffset = Integer.parseInt(offsetStrArr[1]);
-            currentOffset += 12;
-            consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + "#" + currentOffset);
+            currentOffset += BrokerConstants.CONSUME_CONTENT_READ_LENGTH;
+            consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + BrokerConstants.CONSUME_QUEUE_OFFSET_NAME_SPLIT + currentOffset);
 
         } catch (Exception e) {
-            System.err.println("ack操作异常");
+            log.error("ack操作异常");
             e.printStackTrace();
         }
        return true;

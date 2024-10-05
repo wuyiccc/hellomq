@@ -18,7 +18,7 @@ public class LogFileNameUtils {
      */
     public static String buildFirstCommitLogName() {
 
-        return "0000000";
+        return BrokerConstants.FIRST_FILE_NAME;
     }
 
 

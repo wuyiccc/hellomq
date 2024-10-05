@@ -3,10 +3,12 @@ package com.wuyiccc.hellomq.broker.core;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.*;
-import com.wuyiccc.hellomq.broker.utils.JsonUtils;
+import com.wuyiccc.hellomq.common.utils.JsonUtils;
 import com.wuyiccc.hellomq.broker.utils.LogFileNameUtils;
 import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
 import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 最基础的mmap对象模型
  */
 public class CommitLogMMapFileModel {
+
+    private static final Logger log = LoggerFactory.getLogger(CommitLogMMapFileModel.class);
 
     /**
      * 映射的文件
@@ -182,10 +186,10 @@ public class CommitLogMMapFileModel {
         consumeQueueDetailModel.setCommitLogFileName(Integer.parseInt(fileName));
         consumeQueueDetailModel.setMsgIndex(msgIndex);
         consumeQueueDetailModel.setMsgLength(writeContent.length);
-        System.out.println("写入consumequeue内容: " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
+        log.info("写入consumequeue内容: " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
         byte[] content = consumeQueueDetailModel.convertToBytes();
         consumeQueueDetailModel.buildFromBytes(content);
-        System.out.println("byte convert is : " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
+        log.info("byte convert is : " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
         List<ConsumeQueueMMapFileModel> queueModelList = CommonCache.getConsumeQueueMMapFileModelManager().get(topicName);
         ConsumeQueueMMapFileModel consumeQueueMMapFileModel = queueModelList.stream()
                 .filter(queueModel -> queueModel.getQueueId().equals(queueId))

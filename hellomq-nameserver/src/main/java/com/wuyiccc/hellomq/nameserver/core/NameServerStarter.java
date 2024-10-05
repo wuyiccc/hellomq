@@ -2,19 +2,23 @@ package com.wuyiccc.hellomq.nameserver.core;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
-import com.wuyiccc.hellomq.common.handler.TcpNettyServerHandler;
+import com.wuyiccc.hellomq.nameserver.handler.TcpNettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author wuyiccc
  * @date 2024/10/5 14:28
  */
 public class NameServerStarter {
+
+    private static final Logger log = LoggerFactory.getLogger(NameServerStarter.class);
 
 
     private int port;
@@ -49,12 +53,10 @@ public class NameServerStarter {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            log.info("nameserver is closed");
         }));
         ChannelFuture cf = bootstrap.bind(port).sync();
+        log.info("start nameserver application on port: " + port);
         cf.channel().closeFuture().sync();
-    }
-
-    public static void main(String[] args) {
-
     }
 }

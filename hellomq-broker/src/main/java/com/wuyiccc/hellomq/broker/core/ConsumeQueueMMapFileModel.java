@@ -6,6 +6,9 @@ import com.wuyiccc.hellomq.broker.model.QueueModel;
 import com.wuyiccc.hellomq.broker.utils.LogFileNameUtils;
 import com.wuyiccc.hellomq.broker.utils.PutMessageLock;
 import com.wuyiccc.hellomq.broker.utils.UnfairReentrantLock;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +26,9 @@ import java.util.List;
  * 对consumeQueue文件作mmap映射的核心对象
  */
 public class ConsumeQueueMMapFileModel {
+
+    private static final Logger log = LoggerFactory.getLogger(ConsumeQueueMMapFileModel.class);
+
 
 
     /**
@@ -44,9 +50,6 @@ public class ConsumeQueueMMapFileModel {
 
     private ByteBuffer readBuffer;
 
-
-    // 3 * 4int = 12
-    private final static int CONSUME_CONTENT_READ_LENGTH = 12;
 
     /**
      * 指定offset做文件的映射
@@ -120,7 +123,7 @@ public class ConsumeQueueMMapFileModel {
         File newCommitLogFile = new File(newFilePath);
         try {
             newCommitLogFile.createNewFile();
-            System.out.println("创建了新的consumeQueue文件");
+            log.info("创建了新的consumeQueue文件");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -150,7 +153,7 @@ public class ConsumeQueueMMapFileModel {
 
         ByteBuffer readBuf = readBuffer.slice();
         readBuf.position(pos);
-        byte[] content = new byte[CONSUME_CONTENT_READ_LENGTH];
+        byte[] content = new byte[BrokerConstants.CONSUME_CONTENT_READ_LENGTH];
         readBuf.get(content);
         return content;
     }

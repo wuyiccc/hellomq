@@ -35,15 +35,4 @@ public class ByteConvertUtils {
                 | ((ary[3] << 24) & 0xFF000000);
         return value;
     }
-
-    public static void main(String[] args) {
-        int j = 100;
-
-        byte[] bytes = ByteConvertUtils.intToBytes(j);
-        int res = ByteConvertUtils.bytesToInt(bytes);
-
-
-        System.out.println(bytes.length);
-        System.out.println(res);
-    }
 }

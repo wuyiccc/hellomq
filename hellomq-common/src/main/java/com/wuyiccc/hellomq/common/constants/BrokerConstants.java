@@ -22,6 +22,23 @@ public class BrokerConstants {
 
     public static final short DEFAULT_MAGIC_NUM = 17671;
 
+
+    /**
+     * 初始化队列消费进度信息
+     */
+    public static final String INITIAL_QUEUE_OFFSET = "00000000#0";
+
+    public static final String CONSUME_QUEUE_OFFSET_NAME_SPLIT = "#";
+
+    // 3 * 4int = 12
+    public static final int CONSUME_CONTENT_READ_LENGTH = 12;
+
+    public static final String CONSUME_QUEUE_OFFSET_SUB_FILE_NAME = "/config/consumequeue-offset.json";
+
+    public static final String TOPIC_CONFIG_SUB_FILE_NAME = "/config/hellomq-topic.json";
+
+    public static final String FIRST_FILE_NAME = "0000000";
+
     private BrokerConstants() {
     }
 

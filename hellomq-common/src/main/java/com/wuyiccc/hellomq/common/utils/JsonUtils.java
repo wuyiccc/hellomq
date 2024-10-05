@@ -1,4 +1,4 @@
-package com.wuyiccc.hellomq.broker.utils;
+package com.wuyiccc.hellomq.common.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;

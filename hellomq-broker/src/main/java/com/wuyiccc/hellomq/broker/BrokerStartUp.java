@@ -8,6 +8,8 @@ import com.wuyiccc.hellomq.broker.loader.ConsumeQueueOffsetLoader;
 import com.wuyiccc.hellomq.broker.loader.GlobalPropertiesLoader;
 import com.wuyiccc.hellomq.broker.loader.MqTopicLoader;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class BrokerStartUp {
 
+
+    private static final Logger log = LoggerFactory.getLogger(BrokerStartUp.class);
 
     private static GlobalPropertiesLoader globalPropertiesLoader;
 
@@ -75,7 +79,7 @@ public class BrokerStartUp {
             while (true) {
                 byte[] content = consumeQueueConsumeHandler.consume(topic, userServiceConsumerGroup, 0);
                 if (content != null && content.length != 0) {
-                    System.out.println(userServiceConsumerGroup + ", 消费内容: " + new String(content));
+                    log.info(userServiceConsumerGroup + ", 消费内容: " + new String(content));
                     consumeQueueConsumeHandler.ack(topic, userServiceConsumerGroup, 0);
                 } else {
                     try {
@@ -91,7 +95,7 @@ public class BrokerStartUp {
             while (true) {
                 byte[] content = consumeQueueConsumeHandler.consume(topic, orderServiceConsumeGroup, 0);
                 if (content != null && content.length != 0) {
-                    System.out.println(orderServiceConsumeGroup + ", 消费内容: " + new String(content));
+                    log.info(orderServiceConsumeGroup + ", 消费内容: " + new String(content));
                     consumeQueueConsumeHandler.ack(topic, orderServiceConsumeGroup, 0);
                 } else {
                     try {

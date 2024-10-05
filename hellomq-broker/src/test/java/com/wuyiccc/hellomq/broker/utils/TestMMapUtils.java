@@ -1,12 +1,9 @@
 package com.wuyiccc.hellomq.broker.utils;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author wuyiccc
