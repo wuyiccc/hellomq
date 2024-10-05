@@ -20,6 +20,8 @@ public class BrokerConstants {
 
     public static final Integer DEFAULT_REFRESH_CONSUME_QUEUE_OFFSET_TIME_STEP = 1;
 
+    public static final short DEFAULT_MAGIC_NUM = 17671;
+
     private BrokerConstants() {
     }
 
