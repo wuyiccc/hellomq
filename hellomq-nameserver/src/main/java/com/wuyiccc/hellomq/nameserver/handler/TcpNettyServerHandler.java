@@ -1,7 +1,12 @@
 package com.wuyiccc.hellomq.nameserver.handler;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
+import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import com.wuyiccc.hellomq.common.utils.JsonUtils;
+import com.wuyiccc.hellomq.nameserver.event.model.Event;
+import com.wuyiccc.hellomq.nameserver.event.model.HeartBeatEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.UnRegistryEvent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,12 +22,26 @@ public class TcpNettyServerHandler extends SimpleChannelInboundHandler {
 
     private static final Logger log = LoggerFactory.getLogger(TcpNettyServerHandler.class);
 
+    // 网络请求的接收(netty)
+    // 事件发布器的实现
+    // 事件处理器的实现
+    // 数据存储
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         TcpMsg tcpMsg = (TcpMsg) msg;
+        int code = tcpMsg.getCode();
 
-        // 解析成特定的事件, 然后发送事件消息出去
-        log.info(JsonUtils.objectToJson(tcpMsg));
+        byte[] body = tcpMsg.getBody();
+        Event event;
+
+        if (NameServerEventCodeEnum.REGISTRY.getCode() == code) {
+            event = JsonUtils.jsonToPojo(new String(body), RegistryEvent.class);
+        } else if (NameServerEventCodeEnum.UN_REGISTRY.getCode() == code) {
+            event = JsonUtils.jsonToPojo(new String(body), UnRegistryEvent.class);
+        } else if (NameServerEventCodeEnum.HEART_BEAT.getCode() == code) {
+            event = JsonUtils.jsonToPojo(new String(body), HeartBeatEvent.class);
+        }
+
     }
 }
