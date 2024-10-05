@@ -1,5 +1,7 @@
 package com.wuyiccc.hellomq.common.coder;
 
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
+
 /**
  * @author wuyiccc
  * @date 2024/10/5 14:44
@@ -21,6 +23,16 @@ public class TcpMsg {
     private int len;
 
     private byte[] body;
+
+    public TcpMsg() {
+    }
+
+    public TcpMsg(int code, byte[] body) {
+        this.magic = BrokerConstants.DEFAULT_MAGIC_NUM;
+        this.code = code;
+        this.body = body;
+        this.len = body.length;
+    }
 
     public short getMagic() {
         return magic;

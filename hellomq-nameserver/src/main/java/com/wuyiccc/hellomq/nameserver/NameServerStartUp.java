@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver;
 
+import com.wuyiccc.hellomq.common.constants.NameServerConstants;
 import com.wuyiccc.hellomq.nameserver.core.NameServerStarter;
 
 /**
@@ -13,7 +14,7 @@ public class NameServerStartUp {
 
     public static void main(String[] args) throws InterruptedException {
 
-        nameServerStarter = new NameServerStarter(9090);
+        nameServerStarter = new NameServerStarter(NameServerConstants.DEFAULT_NAMESERVER_PORT);
         nameServerStarter.startServer();
     }
 
