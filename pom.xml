@@ -13,6 +13,8 @@
     <description>hellomq</description>
     <modules>
         <module>hellomq-broker</module>
+        <module>hellomq-common</module>
+        <module>hellomq-nameserver</module>
     </modules>
 
     <properties>

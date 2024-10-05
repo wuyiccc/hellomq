@@ -9,7 +9,6 @@
         <version>beta-0.1</version>
     </parent>
 
-    <groupId>cn.tnest</groupId>
     <artifactId>hellomq-broker</artifactId>
 
     <properties>
