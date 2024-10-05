@@ -1,4 +1,4 @@
-package com.wuyiccc.hellomq.broker.constants;
+package com.wuyiccc.hellomq.common.constants;
 
 /**
  * @author wuyiccc

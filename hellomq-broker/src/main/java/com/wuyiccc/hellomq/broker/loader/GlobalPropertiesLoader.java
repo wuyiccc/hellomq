@@ -2,7 +2,7 @@ package com.wuyiccc.hellomq.broker.loader;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import io.netty.util.internal.StringUtil;
 
 /**

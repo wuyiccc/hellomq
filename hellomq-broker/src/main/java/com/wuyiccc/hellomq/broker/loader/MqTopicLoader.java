@@ -3,7 +3,7 @@ package com.wuyiccc.hellomq.broker.loader;
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.config.CommonThreadPoolConfig;
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
-import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
 import com.wuyiccc.hellomq.broker.utils.FileContentUtils;
 import com.wuyiccc.hellomq.broker.utils.JsonUtils;

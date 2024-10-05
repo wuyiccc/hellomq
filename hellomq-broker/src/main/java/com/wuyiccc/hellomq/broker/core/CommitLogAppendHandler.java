@@ -1,7 +1,7 @@
 package com.wuyiccc.hellomq.broker.core;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
-import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.broker.model.CommitLogMessageModel;
 
 import java.io.IOException;

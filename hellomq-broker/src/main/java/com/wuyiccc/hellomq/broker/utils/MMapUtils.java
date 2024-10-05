@@ -1,6 +1,6 @@
 package com.wuyiccc.hellomq.broker.utils;
 
-import com.wuyiccc.hellomq.broker.constants.BrokerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;

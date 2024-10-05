@@ -20,6 +20,13 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.wuyiccc</groupId>
+            <artifactId>hellomq-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
