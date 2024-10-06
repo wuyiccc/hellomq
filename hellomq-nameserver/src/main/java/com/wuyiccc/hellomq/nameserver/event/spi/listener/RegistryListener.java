@@ -1,6 +1,17 @@
 package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
+import com.wuyiccc.hellomq.common.coder.TcpMsg;
+import com.wuyiccc.hellomq.common.constants.BaseConstants;
+import com.wuyiccc.hellomq.common.constants.NameServerConstants;
+import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
+import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
+import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.AttributeKey;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * @author wuyiccc
@@ -8,7 +19,26 @@ import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
  */
 public class RegistryListener implements Listener<RegistryEvent> {
     @Override
-    public void onReceive(RegistryEvent event) {
+    public void onReceive(RegistryEvent event) throws IllegalAccessException {
+        // 安全认证
+        String configUser = CommonCache.getPropertiesLoader().getProperty(NameServerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_USER);
+        String configPassword = CommonCache.getPropertiesLoader().getProperty(NameServerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD);
 
+        ChannelHandlerContext channelHandlerContext = event.getChannelHandlerContext();
+        if (!configUser.equals(event.getUser()) || !configPassword.equals(event.getPassword())) {
+
+            channelHandlerContext.writeAndFlush(new TcpMsg(NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode()
+                    , NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getDesc().getBytes(StandardCharsets.UTF_8)));
+            channelHandlerContext.close();
+            throw new IllegalAccessException("error account to connected");
+        }
+        channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).set(UUID.randomUUID().toString());
+
+        long currentTimestamp = System.currentTimeMillis();
+        ServiceInstance serviceInstance = new ServiceInstance();
+        serviceInstance.setBrokerIp(event.getBrokerIp());
+        serviceInstance.setBrokerPort(event.getBrokerPort());
+        serviceInstance.setFirstRegistryTime(currentTimestamp);
+        CommonCache.getServiceInstanceManager().put(serviceInstance);
     }
 }

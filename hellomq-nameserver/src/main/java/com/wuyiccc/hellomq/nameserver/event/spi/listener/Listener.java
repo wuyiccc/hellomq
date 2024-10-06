@@ -11,5 +11,5 @@ public interface Listener<E extends Event> {
     /**
      * 回调通知
      */
-    void onReceive(E event);
+    void onReceive(E event) throws Exception;
 }

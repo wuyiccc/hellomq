@@ -7,4 +7,10 @@ package com.wuyiccc.hellomq.common.constants;
 public class NameServerConstants {
 
     public static final Integer DEFAULT_NAMESERVER_PORT = 9090;
+
+    public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_USER = "nameserver.user";
+
+    public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD = "nameserver.password";
+
+
 }

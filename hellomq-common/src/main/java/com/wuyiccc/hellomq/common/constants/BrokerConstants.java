@@ -39,6 +39,7 @@ public class BrokerConstants {
 
     public static final String FIRST_FILE_NAME = "0000000";
 
+    public static final String NAME_SERVER_CONFIG_FILE_SUB_PATH = "/config/nameserver.properties";
     private BrokerConstants() {
     }
 

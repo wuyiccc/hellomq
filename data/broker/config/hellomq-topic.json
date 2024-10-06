@@ -1,0 +1,29 @@
+[ {
+  "topic" : "test_topic",
+  "commitLogModel" : {
+    "fileName" : "00000000",
+    "offsetLimit" : 1048576,
+    "offset" : 9348
+  },
+  "queueList" : [ {
+    "id" : 0,
+    "fileName" : "00000000",
+    "offsetLimit" : 6291456,
+    "latestOffset" : 10788,
+    "lastOffset" : 0
+  }, {
+    "id" : 1,
+    "fileName" : "00000000",
+    "offsetLimit" : 6291456,
+    "latestOffset" : 0,
+    "lastOffset" : 0
+  }, {
+    "id" : 2,
+    "fileName" : "00000000",
+    "offsetLimit" : 6291456,
+    "latestOffset" : 0,
+    "lastOffset" : 0
+  } ],
+  "createAt" : "1726994610942",
+  "updateAt" : "1726994620335"
+} ]

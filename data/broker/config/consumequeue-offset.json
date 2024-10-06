@@ -1,0 +1,25 @@
+{
+  "offsetTable" : {
+    "topicConsumerGroupDetailMap" : {
+      "test_topic" : {
+        "consumerGroupDetailMap" : {
+          "test_service_group" : {
+            "0" : "00000000#0",
+            "1" : "00000000#0",
+            "2" : "00000000#0"
+          },
+          "user_service_group" : {
+            "0" : "00000000#10908",
+            "1" : "00000000#0",
+            "2" : "00000000#0"
+          },
+          "order_service_group" : {
+            "0" : "00000000#10908",
+            "1" : "00000000#0",
+            "2" : "00000000#0"
+          }
+        }
+      }
+    }
+  }
+}
