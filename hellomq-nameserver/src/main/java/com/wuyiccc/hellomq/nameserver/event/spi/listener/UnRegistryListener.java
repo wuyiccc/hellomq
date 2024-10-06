@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
@@ -21,22 +22,23 @@ public class UnRegistryListener implements Listener<UnRegistryEvent> {
     @Override
     public void onReceive(UnRegistryEvent event) throws IllegalAccessException {
 
-        String ip = event.getBrokerIp();
-        Integer port = event.getBrokerPort();
-
         ChannelHandlerContext channelHandlerContext = event.getChannelHandlerContext();
-        if (channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).get() == null) {
 
-            TcpMsg tcpMsg = new TcpMsg(NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode()
-                    , NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getDesc().getBytes(StandardCharsets.UTF_8));
-            channelHandlerContext.writeAndFlush(tcpMsg);
+        Object reqId = channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).get();
+        if (reqId == null) {
+            channelHandlerContext.writeAndFlush(new TcpMsg(NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode()
+                    , NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getDesc().getBytes(StandardCharsets.UTF_8)));
             channelHandlerContext.close();
             throw new IllegalAccessException("error account to connected!");
         }
 
-        if (!StringUtils.isEmpty(ip) && port != null) {
-            boolean removeStatus = CommonCache.getServiceInstanceManager().remove(ip, port) != null;
-        }
+        String reqIdStr = (String) reqId;
 
+        boolean removeStatus = CommonCache.getServiceInstanceManager().remove(reqIdStr) != null;
+        if (removeStatus) {
+            channelHandlerContext.writeAndFlush(new TcpMsg(NameServerResponseCodeEnum.UN_REGISTRY_SERVICE.getCode()
+            , NameServerResponseCodeEnum.UN_REGISTRY_SERVICE.getDesc().getBytes(StandardCharsets.UTF_8)));
+            channelHandlerContext.close();
+        }
     }
 }

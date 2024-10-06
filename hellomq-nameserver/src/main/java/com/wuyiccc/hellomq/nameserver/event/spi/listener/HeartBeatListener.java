@@ -2,6 +2,7 @@ package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
+import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.HeartBeatEvent;
@@ -21,7 +22,8 @@ public class HeartBeatListener implements Listener<HeartBeatEvent> {
 
         ChannelHandlerContext channelHandlerContext = event.getChannelHandlerContext();
 
-        if (channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).get() == null) {
+        Object reqId = channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).get();
+        if (reqId == null) {
 
             TcpMsg tcpMsg = new TcpMsg(NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode()
                     , NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getDesc().getBytes(StandardCharsets.UTF_8));
@@ -30,11 +32,13 @@ public class HeartBeatListener implements Listener<HeartBeatEvent> {
             throw new IllegalAccessException("error account to connected!");
 
         }
+        String brokerIdentifyStr = (String) reqId;
+        String[] brokerInfoArr = brokerIdentifyStr.split(StrConstants.COLON);
         // 之前认证过
         long currentTimestamp = System.currentTimeMillis();
         ServiceInstance serviceInstance = new ServiceInstance();
-        serviceInstance.setBrokerIp(event.getBrokerIp());
-        serviceInstance.setBrokerPort(event.getBrokerPort());
+        serviceInstance.setBrokerIp(brokerInfoArr[0]);
+        serviceInstance.setBrokerPort(Integer.valueOf(brokerInfoArr[1]));
         serviceInstance.setLastHeartBeatTime(currentTimestamp);
         CommonCache.getServiceInstanceManager().putIfExist(serviceInstance);
 

@@ -36,8 +36,12 @@ public class ServiceInstanceManager {
         return serviceInstanceMap.get(brokerIp + StrConstants.COLON + brokerPort);
     }
 
-    public ServiceInstance remove(String brokerIp, Integer brokerPort) {
+    public ServiceInstance remove(String key) {
 
-        return serviceInstanceMap.remove(brokerIp + StrConstants.COLON + brokerPort);
+        return serviceInstanceMap.remove(key);
+    }
+
+    public Map<String, ServiceInstance> getServiceInstanceMap() {
+        return serviceInstanceMap;
     }
 }

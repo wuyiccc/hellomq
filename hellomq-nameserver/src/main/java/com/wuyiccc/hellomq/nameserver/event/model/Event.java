@@ -13,9 +13,6 @@ public abstract class Event {
 
     private ChannelHandlerContext channelHandlerContext;
 
-    private String brokerIp;
-
-    private Integer brokerPort;
 
     public long getTimestamp() {
         return timestamp;
@@ -31,22 +28,5 @@ public abstract class Event {
 
     public void setChannelHandlerContext(ChannelHandlerContext channelHandlerContext) {
         this.channelHandlerContext = channelHandlerContext;
-    }
-
-
-    public String getBrokerIp() {
-        return brokerIp;
-    }
-
-    public void setBrokerIp(String brokerIp) {
-        this.brokerIp = brokerIp;
-    }
-
-    public Integer getBrokerPort() {
-        return brokerPort;
-    }
-
-    public void setBrokerPort(Integer brokerPort) {
-        this.brokerPort = brokerPort;
     }
 }

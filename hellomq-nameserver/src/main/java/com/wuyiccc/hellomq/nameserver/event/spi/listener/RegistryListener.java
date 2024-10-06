@@ -3,6 +3,7 @@ package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
 import com.wuyiccc.hellomq.common.constants.NameServerConstants;
+import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
@@ -32,7 +33,7 @@ public class RegistryListener implements Listener<RegistryEvent> {
             channelHandlerContext.close();
             throw new IllegalAccessException("error account to connected");
         }
-        channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).set(UUID.randomUUID().toString());
+        channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).set(event.getBrokerIp() + StrConstants.COLON + event.getBrokerPort());
 
         long currentTimestamp = System.currentTimeMillis();
         ServiceInstance serviceInstance = new ServiceInstance();
