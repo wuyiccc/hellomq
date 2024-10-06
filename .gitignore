@@ -39,4 +39,5 @@ build/
 
 logs/
 arthas-output
-data/
+data/broker/commitlog
+data/broker/consumequeue
