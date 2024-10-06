@@ -1,4 +1,4 @@
-package com.wuyiccc.hellomq.nameserver.event.listener;
+package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
 import com.wuyiccc.hellomq.nameserver.event.model.Event;
 

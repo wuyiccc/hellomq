@@ -1,13 +1,23 @@
 package com.wuyiccc.hellomq.nameserver.event;
 
 import com.google.common.collect.Lists;
-import com.wuyiccc.hellomq.nameserver.event.listener.Listener;
+import com.wuyiccc.hellomq.common.utils.ReflectUtils;
 import com.wuyiccc.hellomq.nameserver.event.model.Event;
+import com.wuyiccc.hellomq.nameserver.event.spi.listener.HeartBeatListener;
+import com.wuyiccc.hellomq.nameserver.event.spi.listener.Listener;
+import com.wuyiccc.hellomq.nameserver.event.spi.listener.UnRegistryListener;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wuyiccc
@@ -15,11 +25,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EventBus {
 
+    private static final Logger log = LoggerFactory.getLogger(EventBus.class);
+
+
     private static Map<Class<? extends Event>, List<Listener>> eventListenerMap = new ConcurrentHashMap<>();
+
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10
+            , 100
+            , 3
+            , TimeUnit.SECONDS
+            , new ArrayBlockingQueue<>(1000)
+            , r -> {
+        Thread thread = new Thread();
+        thread.setName("event-bus-task-" + UUID.randomUUID().toString());
+        return thread;
+    });
 
     public void init() {
 
-        //registry();
+        ServiceLoader<Listener> serviceLoader = ServiceLoader.load(Listener.class);
+        for (Listener listener : serviceLoader) {
+            Class clazz = ReflectUtils.getInterfaceT(listener, 0);
+            registry(clazz, listener);
+        }
+        log.info(eventListenerMap.toString());
     }
 
     private <E extends Event> void registry(Class<? extends Event> clazz, Listener<E> listener) {
@@ -27,7 +56,7 @@ public class EventBus {
         List<Listener> listeners = eventListenerMap.get(clazz);
 
         if (CollectionUtils.isEmpty(listeners)) {
-            eventListenerMap.put(clazz, Lists.newArrayList(listeners));
+            eventListenerMap.put(clazz, Lists.newArrayList(listener));
         } else {
             listeners.add(listener);
             eventListenerMap.put(clazz, listeners);
@@ -37,8 +66,15 @@ public class EventBus {
     public void publish(Event event) {
 
         List<Listener> listeners = eventListenerMap.get(event.getClass());
-        for (Listener listener : listeners) {
-            listener.onReceive(event);
-        }
+
+        threadPoolExecutor.execute(() -> {
+            try {
+                for (Listener listener : listeners) {
+                    listener.onReceive(event);
+                }
+            } catch (Exception e) {
+                log.error("EventBus#publish执行异常", e);
+            }
+        });
     }
 }

@@ -65,7 +65,7 @@ public class TestNameServerSuite {
                 TcpMsg tcpMsg = new TcpMsg(1, msgBody.getBytes());
                 channel.writeAndFlush(tcpMsg);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("测试失败", e);
             }
         }
     }

@@ -2,6 +2,7 @@ package com.wuyiccc.hellomq.nameserver.core;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
+import com.wuyiccc.hellomq.nameserver.event.EventBus;
 import com.wuyiccc.hellomq.nameserver.handler.TcpNettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -46,7 +47,7 @@ public class NameServerStarter {
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
-                ch.pipeline().addLast(new TcpNettyServerHandler());
+                ch.pipeline().addLast(new TcpNettyServerHandler(new EventBus()));
             }
         });
 

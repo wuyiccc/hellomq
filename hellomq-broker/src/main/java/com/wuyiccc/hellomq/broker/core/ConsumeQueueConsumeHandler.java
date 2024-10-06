@@ -105,8 +105,7 @@ public class ConsumeQueueConsumeHandler {
             consumeQueueOffsetDetailMap.put(String.valueOf(queueId), fileName + BrokerConstants.CONSUME_QUEUE_OFFSET_NAME_SPLIT + currentOffset);
 
         } catch (Exception e) {
-            log.error("ack操作异常");
-            e.printStackTrace();
+            log.error("ack操作异常", e);
         }
        return true;
     }
