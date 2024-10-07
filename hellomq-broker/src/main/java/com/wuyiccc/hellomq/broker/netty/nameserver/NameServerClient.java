@@ -2,9 +2,11 @@ package com.wuyiccc.hellomq.broker.netty.nameserver;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
+import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
 import com.wuyiccc.hellomq.common.dto.RegistryDTO;
+import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import com.wuyiccc.hellomq.common.utils.JsonUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.BindException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -56,6 +59,14 @@ public class NameServerClient {
                 ch.pipeline().addLast(new NameServerRespChannelHandler());
             }
         });
+
+        // jvm停止的时候自动关闭clientGroup
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            TcpMsg tcpMsg = new TcpMsg(NameServerEventCodeEnum.UN_REGISTRY.getCode(), new byte[0]);
+            channel.writeAndFlush(tcpMsg);
+            clientGroup.shutdownGracefully();
+            log.info("nameserver client is closed");
+        }));
 
         ChannelFuture channelFuture;
         try {
