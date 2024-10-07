@@ -66,6 +66,7 @@ public class BrokerStartUp {
     private static void initNameServerChannel() {
 
         CommonCache.getNameServerClient().initConnection();
+        CommonCache.getNameServerClient().sendRegistryMsg();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

@@ -7,6 +7,8 @@ package com.wuyiccc.hellomq.common.enums;
 public enum NameServerResponseCodeEnum {
     ERROR_USER_OR_PASSWORD(1001, "账号验证异常"),
     UN_REGISTRY_SERVICE(1002, "服务正常下线"),
+
+    REGISTRY_SUCCESS(1003, "注册成功"),
     ;
 
 

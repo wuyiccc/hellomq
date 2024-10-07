@@ -1,8 +1,11 @@
 package com.wuyiccc.hellomq.broker.netty.nameserver;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
+import com.wuyiccc.hellomq.broker.config.GlobalProperties;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
+import com.wuyiccc.hellomq.common.dto.RegistryDTO;
+import com.wuyiccc.hellomq.common.utils.JsonUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -11,10 +14,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author wuyiccc
@@ -67,6 +73,25 @@ public class NameServerClient {
             throw new RuntimeException("channel has not been connected!");
         }
         return channel;
+    }
+
+    public void sendRegistryMsg() {
+
+        RegistryDTO registryDTO = new RegistryDTO();
+        try {
+            registryDTO.setBrokerIp(Inet4Address.getLocalHost().getHostAddress());
+            GlobalProperties globalProperties = CommonCache.getGlobalProperties();
+            registryDTO.setBrokerPort(globalProperties.getBrokerPort());
+            registryDTO.setUser(globalProperties.getNameserverUser());
+            registryDTO.setPassword(globalProperties.getNameserverPassword());
+
+            byte[] body = JsonUtils.objectToJson(registryDTO).getBytes(StandardCharsets.UTF_8);
+            channel.writeAndFlush(body);
+            log.info("发送注册事件");
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

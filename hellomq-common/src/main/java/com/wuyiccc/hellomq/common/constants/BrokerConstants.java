@@ -51,6 +51,8 @@ public class BrokerConstants {
 
     public static final String PROPERTY_KEY_NAMESERVER_PORT = "nameserver.port";
 
+    public static final String PROPERTY_KEY_BROKER_PORT = "broker.port";
+
     private BrokerConstants() {
     }
 

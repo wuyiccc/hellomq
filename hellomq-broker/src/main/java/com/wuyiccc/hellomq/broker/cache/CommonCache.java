@@ -5,6 +5,7 @@ import com.wuyiccc.hellomq.broker.core.CommitLogMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.core.ConsumeQueueMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import com.wuyiccc.hellomq.broker.netty.nameserver.HeartBeatTaskManager;
 import com.wuyiccc.hellomq.broker.netty.nameserver.NameServerClient;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class CommonCache {
     private static CommitLogMMapFileModelManager commitLogMMapFileModelManager = new CommitLogMMapFileModelManager();
 
     private static NameServerClient nameServerClient = new NameServerClient();
+
+    private static HeartBeatTaskManager heartBeatTaskManager = new HeartBeatTaskManager();
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -84,5 +87,13 @@ public class CommonCache {
 
     public static void setNameServerClient(NameServerClient nameServerClient) {
         CommonCache.nameServerClient = nameServerClient;
+    }
+
+    public static HeartBeatTaskManager getHeartBeatTaskManager() {
+        return heartBeatTaskManager;
+    }
+
+    public static void setHeartBeatTaskManager(HeartBeatTaskManager heartBeatTaskManager) {
+        CommonCache.heartBeatTaskManager = heartBeatTaskManager;
     }
 }

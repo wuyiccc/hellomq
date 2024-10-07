@@ -41,5 +41,9 @@ public class RegistryListener implements Listener<RegistryEvent> {
         serviceInstance.setBrokerPort(event.getBrokerPort());
         serviceInstance.setFirstRegistryTime(currentTimestamp);
         CommonCache.getServiceInstanceManager().put(serviceInstance);
+
+        TcpMsg registrySuccessResponseMsg = new TcpMsg(NameServerResponseCodeEnum.REGISTRY_SUCCESS.getCode()
+                , NameServerResponseCodeEnum.REGISTRY_SUCCESS.getDesc().getBytes(StandardCharsets.UTF_8));
+        channelHandlerContext.writeAndFlush(registrySuccessResponseMsg);
     }
 }

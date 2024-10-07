@@ -22,6 +22,7 @@ public class GlobalProperties {
 
     private String nameserverPassword;
 
+    private Integer brokerPort;
 
     public String getHelloMqHome() {
         return helloMqHome;
@@ -61,5 +62,13 @@ public class GlobalProperties {
 
     public void setNameserverPassword(String nameserverPassword) {
         this.nameserverPassword = nameserverPassword;
+    }
+
+    public Integer getBrokerPort() {
+        return brokerPort;
+    }
+
+    public void setBrokerPort(Integer brokerPort) {
+        this.brokerPort = brokerPort;
     }
 }

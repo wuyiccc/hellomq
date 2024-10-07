@@ -1,7 +1,8 @@
 package com.wuyiccc.hellomq.broker.netty.nameserver;
 
+import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
-import com.wuyiccc.hellomq.common.utils.JsonUtils;
+import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,8 +18,15 @@ public class NameServerRespChannelHandler extends SimpleChannelInboundHandler {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object msg) throws Exception {
-        TcpMsg tcpMsg = (TcpMsg) msg;
 
-        log.info("resp:" + JsonUtils.objectToJson(tcpMsg));
+        TcpMsg tcpMsg = (TcpMsg) msg;
+        if (NameServerResponseCodeEnum.REGISTRY_SUCCESS.getCode() == tcpMsg.getCode()) {
+            // 注册成功, 开启心跳定时任务上报给nameserver
+            CommonCache.getHeartBeatTaskManager().startTask();
+        } else if (NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode() == tcpMsg.getCode()) {
+            // 验证失败, 抛出异常
+            throw new RuntimeException("error nameserver user or password");
+        }
+
     }
 }
