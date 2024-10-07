@@ -48,4 +48,15 @@ public class RegistryEvent extends Event {
     public void setBrokerPort(Integer brokerPort) {
         this.brokerPort = brokerPort;
     }
+
+
+    @Override
+    public String toString() {
+        return "RegistryEvent{" +
+                "user='" + user + '\'' +
+                ", password='" + password + '\'' +
+                ", brokerIp='" + brokerIp + '\'' +
+                ", brokerPort=" + brokerPort +
+                "} " + super.toString();
+    }
 }

@@ -36,7 +36,7 @@ public class EventBus {
             , TimeUnit.SECONDS
             , new ArrayBlockingQueue<>(1000)
             , r -> {
-        Thread thread = new Thread();
+        Thread thread = new Thread(r);
         thread.setName("event-bus-task-" + UUID.randomUUID().toString());
         return thread;
     });
@@ -48,7 +48,6 @@ public class EventBus {
             Class clazz = ReflectUtils.getInterfaceT(listener, 0);
             registry(clazz, listener);
         }
-        log.info(eventListenerMap.toString());
     }
 
     private <E extends Event> void registry(Class<? extends Event> clazz, Listener<E> listener) {

@@ -27,6 +27,7 @@ public class TcpNettyServerHandler extends SimpleChannelInboundHandler {
 
     public TcpNettyServerHandler(EventBus eventBus) {
         this.eventBus = eventBus;
+        this.eventBus.init();
     }
 
     // 网络请求的接收(netty)
@@ -47,10 +48,24 @@ public class TcpNettyServerHandler extends SimpleChannelInboundHandler {
         } else if (NameServerEventCodeEnum.UN_REGISTRY.getCode() == code) {
             event = JsonUtils.jsonToPojo(new String(body), UnRegistryEvent.class);
         } else if (NameServerEventCodeEnum.HEART_BEAT.getCode() == code) {
-            event = JsonUtils.jsonToPojo(new String(body), HeartBeatEvent.class);
+            event = new HeartBeatEvent();
         }
 
+        event.setChannelHandlerContext(ctx);
         eventBus.publish(event);
 
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+
+        UnRegistryEvent unRegistryEvent = new UnRegistryEvent();
+        unRegistryEvent.setChannelHandlerContext(ctx);
+        eventBus.publish(unRegistryEvent);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
     }
 }

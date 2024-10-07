@@ -3,6 +3,8 @@ package com.wuyiccc.hellomq.nameserver.core;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,6 +18,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class InValidServiceRemoveTask implements Runnable {
 
+    private static final Logger log = LoggerFactory.getLogger(InValidServiceRemoveTask.class);
+
+
 
     @Override
     public void run() {
@@ -26,6 +31,10 @@ public class InValidServiceRemoveTask implements Runnable {
                 Map<String, ServiceInstance> serviceInstanceMap = CommonCache.getServiceInstanceManager().getServiceInstanceMap();
                 long currentTime = System.currentTimeMillis();
                 Iterator<String> iterator = serviceInstanceMap.keySet().iterator();
+
+                log.info("本次heartbeat心跳机制定时检查节点信息为:{}", serviceInstanceMap);
+
+
                 while (iterator.hasNext()) {
                     String brokerReqId = iterator.next();
                     ServiceInstance serviceInstance = serviceInstanceMap.get(brokerReqId);
@@ -36,13 +45,15 @@ public class InValidServiceRemoveTask implements Runnable {
                             iterator.remove();
                         } else {
                             // 如果没有, 则跳过检查
-                            continue;
                         }
+                        continue;
                     }
                     if (currentTime - serviceInstance.getLastHeartBeatTime() > BaseConstants.MILLISECONDS_9) {
                         iterator.remove();
                     }
                 }
+
+
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

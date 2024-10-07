@@ -29,4 +29,12 @@ public abstract class Event {
     public void setChannelHandlerContext(ChannelHandlerContext channelHandlerContext) {
         this.channelHandlerContext = channelHandlerContext;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "timestamp=" + timestamp +
+                ", channelHandlerContext=" + channelHandlerContext +
+                '}';
+    }
 }

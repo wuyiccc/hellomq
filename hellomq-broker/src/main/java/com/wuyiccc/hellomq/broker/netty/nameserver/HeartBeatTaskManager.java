@@ -19,7 +19,7 @@ public class HeartBeatTaskManager {
 
     public void startTask() {
 
-        if (flag.getAndIncrement() > 1) {
+        if (flag.getAndIncrement() >= 1) {
             return;
         }
 

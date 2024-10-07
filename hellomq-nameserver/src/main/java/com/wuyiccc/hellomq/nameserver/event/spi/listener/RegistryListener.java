@@ -10,6 +10,8 @@ import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -19,6 +21,10 @@ import java.util.UUID;
  * @date 2024/10/6 09:09
  */
 public class RegistryListener implements Listener<RegistryEvent> {
+
+    private static final Logger log = LoggerFactory.getLogger(RegistryListener.class);
+
+
     @Override
     public void onReceive(RegistryEvent event) throws IllegalAccessException {
         // 安全认证
@@ -33,6 +39,7 @@ public class RegistryListener implements Listener<RegistryEvent> {
             channelHandlerContext.close();
             throw new IllegalAccessException("error account to connected");
         }
+        log.info("注册事件接收: {}", event);
         channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).set(event.getBrokerIp() + StrConstants.COLON + event.getBrokerPort());
 
         long currentTimestamp = System.currentTimeMillis();

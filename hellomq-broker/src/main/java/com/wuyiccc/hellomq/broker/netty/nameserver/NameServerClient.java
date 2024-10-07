@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.net.BindException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -62,8 +63,7 @@ public class NameServerClient {
 
         // jvm停止的时候自动关闭clientGroup
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            TcpMsg tcpMsg = new TcpMsg(NameServerEventCodeEnum.UN_REGISTRY.getCode(), new byte[0]);
-            channel.writeAndFlush(tcpMsg);
+
             clientGroup.shutdownGracefully();
             log.info("nameserver client is closed");
         }));
@@ -97,7 +97,9 @@ public class NameServerClient {
             registryDTO.setPassword(globalProperties.getNameserverPassword());
 
             byte[] body = JsonUtils.objectToJson(registryDTO).getBytes(StandardCharsets.UTF_8);
-            channel.writeAndFlush(body);
+
+            TcpMsg tcpMsg = new TcpMsg(NameServerEventCodeEnum.REGISTRY.getCode(), body);
+            channel.writeAndFlush(tcpMsg);
             log.info("发送注册事件");
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);

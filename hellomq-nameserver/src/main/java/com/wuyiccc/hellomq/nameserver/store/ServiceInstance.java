@@ -59,4 +59,15 @@ public class ServiceInstance {
     public void setAttrs(Map<String, String> attrs) {
         this.attrs = attrs;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceInstance{" +
+                "brokerIp='" + brokerIp + '\'' +
+                ", brokerPort=" + brokerPort +
+                ", firstRegistryTime=" + firstRegistryTime +
+                ", lastHeartBeatTime=" + lastHeartBeatTime +
+                ", attrs=" + attrs +
+                '}';
+    }
 }

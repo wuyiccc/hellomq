@@ -5,4 +5,9 @@ package com.wuyiccc.hellomq.nameserver.event.model;
  * @date 2024/10/5 22:45
  */
 public class HeartBeatEvent extends Event{
+
+    @Override
+    public String toString() {
+        return "HeartBeatEvent{} " + super.toString();
+    }
 }
