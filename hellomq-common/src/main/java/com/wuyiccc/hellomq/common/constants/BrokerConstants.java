@@ -40,6 +40,17 @@ public class BrokerConstants {
     public static final String FIRST_FILE_NAME = "0000000";
 
     public static final String NAME_SERVER_CONFIG_FILE_SUB_PATH = "/config/nameserver.properties";
+
+    public static final String BROKER_PROPERTIES_PATH = "/config/broker.properties";
+
+    public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_USER = "nameserver.user";
+
+    public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD = "nameserver.password";
+
+    public static final String PROPERTY_KEY_NAMESERVER_IP = "nameserver.ip";
+
+    public static final String PROPERTY_KEY_NAMESERVER_PORT = "nameserver.port";
+
     private BrokerConstants() {
     }
 

@@ -5,6 +5,7 @@ import com.wuyiccc.hellomq.broker.core.CommitLogMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.core.ConsumeQueueMMapFileModelManager;
 import com.wuyiccc.hellomq.broker.model.ConsumeQueueOffsetModel;
 import com.wuyiccc.hellomq.broker.model.MqTopicModel;
+import com.wuyiccc.hellomq.broker.netty.nameserver.NameServerClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class CommonCache {
     private static ConsumeQueueMMapFileModelManager consumeQueueMMapFileModelManager = new ConsumeQueueMMapFileModelManager();
 
     private static CommitLogMMapFileModelManager commitLogMMapFileModelManager = new CommitLogMMapFileModelManager();
+
+    private static NameServerClient nameServerClient = new NameServerClient();
 
     public static GlobalProperties getGlobalProperties() {
         return globalProperties;
@@ -73,5 +76,13 @@ public class CommonCache {
 
     public static void setCommitLogMMapFileModelManager(CommitLogMMapFileModelManager commitLogMMapFileModelManager) {
         CommonCache.commitLogMMapFileModelManager = commitLogMMapFileModelManager;
+    }
+
+    public static NameServerClient getNameServerClient() {
+        return nameServerClient;
+    }
+
+    public static void setNameServerClient(NameServerClient nameServerClient) {
+        CommonCache.nameServerClient = nameServerClient;
     }
 }
