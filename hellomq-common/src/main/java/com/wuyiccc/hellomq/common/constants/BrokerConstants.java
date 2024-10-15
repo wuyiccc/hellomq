@@ -43,6 +43,8 @@ public class BrokerConstants {
 
     public static final String BROKER_PROPERTIES_PATH = "/config/broker.properties";
 
+    public static final Integer DEFAULT_NAMESERVER_PORT = 9090;
+
     public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_USER = "nameserver.user";
 
     public static final String PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD = "nameserver.password";
@@ -52,6 +54,26 @@ public class BrokerConstants {
     public static final String PROPERTY_KEY_NAMESERVER_PORT = "nameserver.port";
 
     public static final String PROPERTY_KEY_BROKER_PORT = "broker.port";
+
+    /**
+     * nameserver.replication.mode=master_slave
+     * nameserver.replication.master.slave.role=master
+     * nameserver.replication.port=30019
+     * nameserver.replication.master=127.0.0.1:30019
+     * nameserver.replication.master.slave.type=sync
+     */
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_MODE = "nameserver.replication.mode";
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_MASTER_SLAVE_ROLE = "nameserver.replication.master.slave.role";
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_PORT = "nameserver.replication.port";
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_MASTER = "nameserver.replication.master";
+
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_MASTER_SLAVE_TYPE = "nameserver.replication.master.slave.type";
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_NEXT_NODE = "nameserver.replication.next.node";
 
     private BrokerConstants() {
     }

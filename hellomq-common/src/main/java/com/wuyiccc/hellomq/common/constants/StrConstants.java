@@ -1,7 +1,5 @@
 package com.wuyiccc.hellomq.common.constants;
 
-import java.io.File;
-
 /**
  * @author wuyiccc
  * @date 2024/10/6 10:58
@@ -10,4 +8,6 @@ import java.io.File;
 public class StrConstants {
 
     public static final String COLON = ":";
+
+    public static final String EMPTY = "";
 }

@@ -1,6 +1,6 @@
 package com.wuyiccc.hellomq.nameserver;
 
-import com.wuyiccc.hellomq.common.constants.NameServerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.core.InValidServiceRemoveTask;
 import com.wuyiccc.hellomq.nameserver.core.NameServerStarter;
@@ -20,7 +20,9 @@ public class NameServerStartUp {
 
         CommonCache.getPropertiesLoader().loadProperties();
         new Thread(new InValidServiceRemoveTask()).start();
-        nameServerStarter = new NameServerStarter(NameServerConstants.DEFAULT_NAMESERVER_PORT);
+        nameServerStarter = new NameServerStarter(BrokerConstants.DEFAULT_NAMESERVER_PORT);
+
+
         nameServerStarter.startServer();
     }
 

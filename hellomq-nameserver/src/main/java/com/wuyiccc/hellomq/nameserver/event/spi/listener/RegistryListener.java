@@ -2,7 +2,7 @@ package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
-import com.wuyiccc.hellomq.common.constants.NameServerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 /**
  * @author wuyiccc
@@ -28,8 +27,8 @@ public class RegistryListener implements Listener<RegistryEvent> {
     @Override
     public void onReceive(RegistryEvent event) throws IllegalAccessException {
         // 安全认证
-        String configUser = CommonCache.getPropertiesLoader().getProperty(NameServerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_USER);
-        String configPassword = CommonCache.getPropertiesLoader().getProperty(NameServerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD);
+        String configUser = CommonCache.getPropertiesLoader().getProperty(BrokerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_USER);
+        String configPassword = CommonCache.getPropertiesLoader().getProperty(BrokerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD);
 
         ChannelHandlerContext channelHandlerContext = event.getChannelHandlerContext();
         if (!configUser.equals(event.getUser()) || !configPassword.equals(event.getPassword())) {

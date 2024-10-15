@@ -3,7 +3,7 @@ package com.wuyiccc.hellomq.nameserver;
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
-import com.wuyiccc.hellomq.common.constants.NameServerConstants;
+import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -47,7 +47,7 @@ public class TestNameServerSuite {
         });
         ChannelFuture channelFuture = null;
         try {
-            channelFuture = bootstrap.connect(DEFAULT_NAMESERVER_IP, NameServerConstants.DEFAULT_NAMESERVER_PORT).sync();
+            channelFuture = bootstrap.connect(DEFAULT_NAMESERVER_IP, BrokerConstants.DEFAULT_NAMESERVER_PORT).sync();
             channel = channelFuture.channel();
             log.info("success connected to nameserver!");
         } catch (InterruptedException e) {
