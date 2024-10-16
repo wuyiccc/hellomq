@@ -1,11 +1,10 @@
 package com.wuyiccc.hellomq.nameserver.event;
 
 import com.google.common.collect.Lists;
+import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.utils.ReflectUtils;
 import com.wuyiccc.hellomq.nameserver.event.model.Event;
-import com.wuyiccc.hellomq.nameserver.event.spi.listener.HeartBeatListener;
 import com.wuyiccc.hellomq.nameserver.event.spi.listener.Listener;
-import com.wuyiccc.hellomq.nameserver.event.spi.listener.UnRegistryListener;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,12 @@ public class EventBus {
 
     private static Map<Class<? extends Event>, List<Listener>> eventListenerMap = new ConcurrentHashMap<>();
 
+    private String taskName;
+
+    public EventBus(String taskName) {
+        this.taskName = taskName;
+    }
+
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10
             , 100
             , 3
@@ -37,7 +42,7 @@ public class EventBus {
             , new ArrayBlockingQueue<>(1000)
             , r -> {
         Thread thread = new Thread(r);
-        thread.setName("event-bus-task-" + UUID.randomUUID().toString());
+        thread.setName(taskName + StrConstants.DASHED + UUID.randomUUID().toString());
         return thread;
     });
 

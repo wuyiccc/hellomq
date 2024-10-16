@@ -7,6 +7,8 @@ import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.config.MasterSlavingReplicationProperties;
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationModeEnum;
+import com.wuyiccc.hellomq.nameserver.event.EventBus;
+import com.wuyiccc.hellomq.nameserver.handler.MasterSlaveReplicationServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -79,6 +81,11 @@ public class ReplicationService {
                 protected void initChannel(Channel ch) throws Exception {
                     ch.pipeline().addLast(new TcpMsgDecoder());
                     ch.pipeline().addLast(new TcpMsgEncoder());
+                    if (replicationModeEnum == ReplicationModeEnum.MASTER_SLAVE) {
+                        ch.pipeline().addLast(new MasterSlaveReplicationServerHandler(new EventBus("replication-task")));
+                    } else if (replicationModeEnum == ReplicationModeEnum.TRACE) {
+                        // todo(wuyiccc): 新增其他handler
+                    }
                 }
             });
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

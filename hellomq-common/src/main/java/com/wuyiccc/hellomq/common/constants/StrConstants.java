@@ -10,4 +10,7 @@ public class StrConstants {
     public static final String COLON = ":";
 
     public static final String EMPTY = "";
+
+    public static final String DASHED = "-";
+
 }

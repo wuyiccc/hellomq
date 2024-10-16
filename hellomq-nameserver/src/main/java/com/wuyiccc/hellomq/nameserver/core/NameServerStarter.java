@@ -47,7 +47,7 @@ public class NameServerStarter {
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
-                ch.pipeline().addLast(new TcpNettyServerHandler(new EventBus()));
+                ch.pipeline().addLast(new TcpNettyServerHandler(new EventBus("broker-connection-task")));
             }
         });
 
