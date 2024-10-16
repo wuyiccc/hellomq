@@ -2,14 +2,15 @@ package com.wuyiccc.hellomq.nameserver.event.spi.listener;
 
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
-import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
+import com.wuyiccc.hellomq.nameserver.utils.NameServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
+import io.netty.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +27,12 @@ public class RegistryListener implements Listener<RegistryEvent> {
 
     @Override
     public void onReceive(RegistryEvent event) throws IllegalAccessException {
-        // 安全认证
-        String configUser = CommonCache.getPropertiesLoader().getProperty(BrokerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_USER);
-        String configPassword = CommonCache.getPropertiesLoader().getProperty(BrokerConstants.PROPERTY_KEY_NAME_SERVER_CONFIG_PASSWORD);
 
+        // 安全认证
+        boolean isVerify = NameServerUtils.isVerify(event.getUser(), event.getPassword());
         ChannelHandlerContext channelHandlerContext = event.getChannelHandlerContext();
-        if (!configUser.equals(event.getUser()) || !configPassword.equals(event.getPassword())) {
+
+        if (!isVerify) {
 
             channelHandlerContext.writeAndFlush(new TcpMsg(NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode()
                     , NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getDesc().getBytes(StandardCharsets.UTF_8)));

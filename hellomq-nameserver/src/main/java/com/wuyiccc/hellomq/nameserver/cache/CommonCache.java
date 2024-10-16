@@ -2,6 +2,7 @@ package com.wuyiccc.hellomq.nameserver.cache;
 
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.core.PropertiesLoader;
+import com.wuyiccc.hellomq.nameserver.store.ReplicationChannelManager;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstanceManager;
 
 /**
@@ -17,6 +18,8 @@ public class CommonCache {
 
 
     private static NameServerProperties nameServerProperties = new NameServerProperties();
+
+    private static ReplicationChannelManager replicationChannelManager = new ReplicationChannelManager();
 
     public static PropertiesLoader getPropertiesLoader() {
         return propertiesLoader;
@@ -40,5 +43,13 @@ public class CommonCache {
 
     public static void setNameServerProperties(NameServerProperties nameServerProperties) {
         CommonCache.nameServerProperties = nameServerProperties;
+    }
+
+    public static ReplicationChannelManager getReplicationChannelManager() {
+        return replicationChannelManager;
+    }
+
+    public static void setReplicationChannelManager(ReplicationChannelManager replicationChannelManager) {
+        CommonCache.replicationChannelManager = replicationChannelManager;
     }
 }
