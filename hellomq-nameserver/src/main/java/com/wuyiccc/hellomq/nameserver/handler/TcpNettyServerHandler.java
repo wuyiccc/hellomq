@@ -44,9 +44,9 @@ public class TcpNettyServerHandler extends SimpleChannelInboundHandler {
         Event event = null;
 
         if (NameServerEventCodeEnum.REGISTRY.getCode() == code) {
-            event = JsonUtils.jsonToPojo(new String(body), RegistryEvent.class);
+            event = JsonUtils.toBean(new String(body), RegistryEvent.class);
         } else if (NameServerEventCodeEnum.UN_REGISTRY.getCode() == code) {
-            event = JsonUtils.jsonToPojo(new String(body), UnRegistryEvent.class);
+            event = JsonUtils.toBean(new String(body), UnRegistryEvent.class);
         } else if (NameServerEventCodeEnum.HEART_BEAT.getCode() == code) {
             event = new HeartBeatEvent();
         }

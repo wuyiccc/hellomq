@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author wuyiccc
@@ -22,18 +22,30 @@ public class JsonUtils {
         MAPPER.registerModules(new JavaTimeModule()); // 解决 LocalDateTime 的序列化
     }
 
+
     /**
      * 对象转json字符串
      *
      * @param data 对象
      * @return json字符串
      */
-    public static String objectToJson(Object data) {
+    public static byte[] toJsonBytes(Object data) {
 
-        return objectToJson(data, false);
+        return toJsonStr(data, false).getBytes(StandardCharsets.UTF_8);
     }
 
-    public static String objectToJson(Object data, boolean format) {
+    /**
+     * 对象转json字符串
+     *
+     * @param data 对象
+     * @return json字符串
+     */
+    public static String toJsonStr(Object data) {
+
+        return toJsonStr(data, false);
+    }
+
+    public static String toJsonStr(Object data, boolean format) {
 
         if (format) {
             try {
@@ -51,6 +63,7 @@ public class JsonUtils {
     }
 
 
+
     /**
      * json字符串转对象
      *
@@ -58,9 +71,25 @@ public class JsonUtils {
      * @param beanType 对象类型
      * @return 对象
      */
-    public static <T> T jsonToPojo(String jsonData, Class<T> beanType) {
+    public static <T> T toBean(String jsonData, Class<T> beanType) {
         try {
             return MAPPER.readValue(jsonData, beanType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * json字符串数组转对象
+     *
+     * @param bytes json字符串数组
+     * @param beanType 对象类型
+     * @return 对象
+     */
+    public static <T> T toBean(byte[] bytes, Class<T> beanType) {
+        try {
+            String data = new String(bytes);
+            return MAPPER.readValue(data, beanType);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +102,7 @@ public class JsonUtils {
      * @param beanType 对象类型
      * @return 对象
      */
-    public static <T> List<T> jsonToList(String jsonData, Class<T> beanType) {
+    public static <T> List<T> toList(String jsonData, Class<T> beanType) {
         JavaType javaType = MAPPER.getTypeFactory().constructParametricType(List.class, beanType);
         try {
             return MAPPER.readValue(jsonData, javaType);
@@ -88,7 +117,7 @@ public class JsonUtils {
      * @param jsonData json字符串
      * @return json对象
      */
-    public static JsonNode jsonToJsonNode(String jsonData) {
+    public static JsonNode toJsonNode(String jsonData) {
 
         try {
             return MAPPER.readTree(jsonData);
@@ -104,7 +133,7 @@ public class JsonUtils {
      * @param jsonType class对象
      * @return 对象
      */
-    public static <T> T jsonNodeToPojo(JsonNode jsonNode, Class<T> jsonType) {
+    public static <T> T toBean(JsonNode jsonNode, Class<T> jsonType) {
 
         try {
             return MAPPER.treeToValue(jsonNode, jsonType);

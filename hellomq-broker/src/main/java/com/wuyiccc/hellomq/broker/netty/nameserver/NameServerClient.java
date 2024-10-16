@@ -20,10 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.BindException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -96,7 +94,7 @@ public class NameServerClient {
             registryDTO.setUser(globalProperties.getNameserverUser());
             registryDTO.setPassword(globalProperties.getNameserverPassword());
 
-            byte[] body = JsonUtils.objectToJson(registryDTO).getBytes(StandardCharsets.UTF_8);
+            byte[] body = JsonUtils.toJsonStr(registryDTO).getBytes(StandardCharsets.UTF_8);
 
             TcpMsg tcpMsg = new TcpMsg(NameServerEventCodeEnum.REGISTRY.getCode(), body);
             channel.writeAndFlush(tcpMsg);

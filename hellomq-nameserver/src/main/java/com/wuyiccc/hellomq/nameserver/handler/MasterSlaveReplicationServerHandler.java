@@ -43,7 +43,7 @@ public class MasterSlaveReplicationServerHandler extends SimpleChannelInboundHan
         // 从节点发起链接, 在master端通过密码进行验证, 建立链接
         Event event = null;
         if (NameServerEventCodeEnum.START_REPLICATION.getCode() == code) {
-            event = JsonUtils.jsonToPojo(new String(body), StartReplicationEvent.class);
+            event = JsonUtils.toBean(new String(body), StartReplicationEvent.class);
         }
 
         event.setChannelHandlerContext(ctx);

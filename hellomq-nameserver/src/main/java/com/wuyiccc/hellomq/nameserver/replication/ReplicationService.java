@@ -29,13 +29,13 @@ public class ReplicationService {
     private static final Logger log = LoggerFactory.getLogger(ReplicationService.class);
 
 
-    public void checkProperties() {
+    public ReplicationModeEnum checkProperties() {
 
         NameServerProperties nameServerProperties = CommonCache.getNameServerProperties();
         String mode = nameServerProperties.getReplicationMode();
         if (StringUtils.isBlank(mode)) {
             log.info("执行单机模式");
-            return;
+            return null;
         }
 
         ReplicationModeEnum replicationModeEnum = ReplicationModeEnum.of(mode);
@@ -52,6 +52,7 @@ public class ReplicationService {
             AssertUtils.isNotBlank(masterSlaveReplicationProperties.getType(), "type参数不能为空");
             AssertUtils.isNotNull(masterSlaveReplicationProperties.getPort(), "同步端口不能为空");
         }
+        return replicationModeEnum;
     }
 
     public void startReplicationTask(ReplicationModeEnum replicationModeEnum) {

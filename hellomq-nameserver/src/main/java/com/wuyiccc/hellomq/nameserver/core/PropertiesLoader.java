@@ -1,6 +1,5 @@
 package com.wuyiccc.hellomq.nameserver.core;
 
-import com.sun.org.apache.xml.internal.security.algorithms.implementations.IntegrityHmac;
 import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.utils.JsonUtils;
@@ -12,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
@@ -53,7 +50,7 @@ public class PropertiesLoader {
         nameServerProperties.setMasterSlavingReplicationProperties(masterSlavingReplicationProperties);
 
 
-        log.info("nameServerProperties: {}", JsonUtils.objectToJson(nameServerProperties, true));
+        log.info("nameServerProperties: {}", JsonUtils.toJsonStr(nameServerProperties, true));
         CommonCache.setNameServerProperties(nameServerProperties);
     }
 

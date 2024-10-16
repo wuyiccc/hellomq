@@ -186,10 +186,10 @@ public class CommitLogMMapFileModel {
         consumeQueueDetailModel.setCommitLogFileName(Integer.parseInt(fileName));
         consumeQueueDetailModel.setMsgIndex(msgIndex);
         consumeQueueDetailModel.setMsgLength(writeContent.length);
-        log.info("写入consumequeue内容: " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
+        log.info("写入consumequeue内容: " + JsonUtils.toJsonStr(consumeQueueDetailModel, true));
         byte[] content = consumeQueueDetailModel.convertToBytes();
         consumeQueueDetailModel.buildFromBytes(content);
-        log.info("byte convert is : " + JsonUtils.objectToJson(consumeQueueDetailModel, true));
+        log.info("byte convert is : " + JsonUtils.toJsonStr(consumeQueueDetailModel, true));
         List<ConsumeQueueMMapFileModel> queueModelList = CommonCache.getConsumeQueueMMapFileModelManager().get(topicName);
         ConsumeQueueMMapFileModel consumeQueueMMapFileModel = queueModelList.stream()
                 .filter(queueModel -> queueModel.getQueueId().equals(queueId))

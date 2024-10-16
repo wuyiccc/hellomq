@@ -35,7 +35,7 @@ public class MqTopicLoader {
 
         String fileContent = FileContentUtils.readFromFile(filePath);
 
-        List<MqTopicModel> mqTopicModelList = JsonUtils.jsonToList(fileContent, MqTopicModel.class);
+        List<MqTopicModel> mqTopicModelList = JsonUtils.toList(fileContent, MqTopicModel.class);
 
         CommonCache.setMqTopicModelList(mqTopicModelList);
     }
@@ -54,7 +54,7 @@ public class MqTopicLoader {
                     log.info("commitlog刷盘中");
                     // 刷盘
                     List<MqTopicModel> topicModelList = CommonCache.getMqTopicModelList();
-                    FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(topicModelList, true));
+                    FileContentUtils.overWriteToFile(filePath, JsonUtils.toJsonStr(topicModelList, true));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

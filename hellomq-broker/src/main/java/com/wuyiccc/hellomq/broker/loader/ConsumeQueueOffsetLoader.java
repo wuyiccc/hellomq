@@ -34,7 +34,7 @@ public class ConsumeQueueOffsetLoader {
 
         String fileContent = FileContentUtils.readFromFile(filePath);
 
-        ConsumeQueueOffsetModel mqTopicModelList = JsonUtils.jsonToPojo(fileContent, ConsumeQueueOffsetModel.class);
+        ConsumeQueueOffsetModel mqTopicModelList = JsonUtils.toBean(fileContent, ConsumeQueueOffsetModel.class);
 
         CommonCache.setConsumeQueueOffsetModel(mqTopicModelList);
     }
@@ -55,7 +55,7 @@ public class ConsumeQueueOffsetLoader {
                     log.info("consume-queue-offset 刷盘中");
                     // 刷盘
                     ConsumeQueueOffsetModel consumeQueueDetailModel = CommonCache.getConsumeQueueOffsetModel();
-                    FileContentUtils.overWriteToFile(filePath, JsonUtils.objectToJson(consumeQueueDetailModel, true));
+                    FileContentUtils.overWriteToFile(filePath, JsonUtils.toJsonStr(consumeQueueDetailModel, true));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

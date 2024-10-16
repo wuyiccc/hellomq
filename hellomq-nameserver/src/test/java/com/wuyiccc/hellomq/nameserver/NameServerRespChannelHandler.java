@@ -19,6 +19,6 @@ public class NameServerRespChannelHandler extends SimpleChannelInboundHandler {
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object msg) throws Exception {
         TcpMsg tcpMsg = (TcpMsg) msg;
 
-        log.info("resp:" + JsonUtils.objectToJson(tcpMsg));
+        log.info("resp:" + JsonUtils.toJsonStr(tcpMsg));
     }
 }
