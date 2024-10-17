@@ -15,12 +15,16 @@ import java.util.concurrent.BlockingQueue;
  * @author wuyiccc
  * @date 2024/10/16 23:04
  */
-public class MasterReplicationMsgSendTask {
+public class MasterReplicationMsgSendTask extends ReplicationTask {
 
     private BlockingQueue<ReplicationMsgEvent> replicationMsgEventQueue = new ArrayBlockingQueue<>(5000);
 
+    public MasterReplicationMsgSendTask(String taskName) {
+        super(taskName);
+    }
 
-    public void startSendReplicationMsgTask() {
+    @Override
+    void startTask() {
 
         while (true) {
 
@@ -36,5 +40,4 @@ public class MasterReplicationMsgSendTask {
             }
         }
     }
-
 }

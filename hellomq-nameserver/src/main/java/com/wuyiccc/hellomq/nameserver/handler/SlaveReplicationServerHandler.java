@@ -17,13 +17,13 @@ import org.slf4j.LoggerFactory;
  * @date 2024/10/5 15:29
  */
 @ChannelHandler.Sharable
-public class MasterSlaveReplicationServerHandler extends SimpleChannelInboundHandler {
+public class SlaveReplicationServerHandler extends SimpleChannelInboundHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MasterSlaveReplicationServerHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SlaveReplicationServerHandler.class);
 
     private EventBus eventBus;
 
-    public MasterSlaveReplicationServerHandler(EventBus eventBus) {
+    public SlaveReplicationServerHandler(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.init();
     }

@@ -30,4 +30,20 @@ public class StartReplicationEvent extends Event {
     public String getSlavePort() {
         return slavePort;
     }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSlaveIp(String slaveIp) {
+        this.slaveIp = slaveIp;
+    }
+
+    public void setSlavePort(String slavePort) {
+        this.slavePort = slavePort;
+    }
 }

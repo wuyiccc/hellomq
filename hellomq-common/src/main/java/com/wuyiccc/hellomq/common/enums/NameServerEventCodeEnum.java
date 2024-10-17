@@ -15,6 +15,8 @@ public enum NameServerEventCodeEnum {
     MASTER_START_REPLICATION_ACK(5, "master回应slave节点开启同步"),
 
     MASTER_REPLICATION_MSG(6, "主从同步数据"),
+
+    SLAVE_HEART_BEAT(7,"从节点心跳数据")
     ;
 
     private int code;

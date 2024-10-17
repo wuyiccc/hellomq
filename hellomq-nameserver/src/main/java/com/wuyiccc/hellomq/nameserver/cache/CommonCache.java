@@ -2,9 +2,11 @@ package com.wuyiccc.hellomq.nameserver.cache;
 
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.core.PropertiesLoader;
-import com.wuyiccc.hellomq.nameserver.replication.MasterReplicationMsgSendTask;
+import com.wuyiccc.hellomq.nameserver.replication.ReplicationTask;
 import com.wuyiccc.hellomq.nameserver.store.ReplicationChannelManager;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstanceManager;
+import io.netty.channel.Channel;
+
 
 /**
  * @author wuyiccc
@@ -22,7 +24,9 @@ public class CommonCache {
 
     private static ReplicationChannelManager replicationChannelManager = new ReplicationChannelManager();
 
-    private static MasterReplicationMsgSendTask masterReplicationMsgSendTask = new MasterReplicationMsgSendTask();
+    private static ReplicationTask replicationTask;
+
+    private static Channel masterConnection = null;
 
     public static PropertiesLoader getPropertiesLoader() {
         return propertiesLoader;
@@ -56,11 +60,20 @@ public class CommonCache {
         CommonCache.replicationChannelManager = replicationChannelManager;
     }
 
-    public static MasterReplicationMsgSendTask getMasterReplicationMsgSendTask() {
-        return masterReplicationMsgSendTask;
+
+    public static ReplicationTask getReplicationTask() {
+        return replicationTask;
     }
 
-    public static void setMasterReplicationMsgSendTask(MasterReplicationMsgSendTask masterReplicationMsgSendTask) {
-        CommonCache.masterReplicationMsgSendTask = masterReplicationMsgSendTask;
+    public static void setReplicationTask(ReplicationTask replicationTask) {
+        CommonCache.replicationTask = replicationTask;
+    }
+
+    public static Channel getMasterConnection() {
+        return masterConnection;
+    }
+
+    public static void setMasterConnection(Channel masterConnection) {
+        CommonCache.masterConnection = masterConnection;
     }
 }

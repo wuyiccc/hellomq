@@ -1,11 +1,14 @@
 package com.wuyiccc.hellomq.nameserver;
 
-import com.wuyiccc.hellomq.common.constants.BrokerConstants;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.core.InValidServiceRemoveTask;
 import com.wuyiccc.hellomq.nameserver.core.NameServerStarter;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationModeEnum;
+import com.wuyiccc.hellomq.nameserver.enums.ReplicationRoleEnum;
+import com.wuyiccc.hellomq.nameserver.replication.MasterReplicationMsgSendTask;
 import com.wuyiccc.hellomq.nameserver.replication.ReplicationService;
+import com.wuyiccc.hellomq.nameserver.replication.ReplicationTask;
+import com.wuyiccc.hellomq.nameserver.replication.SlaveReplicationHeartBeatTask;
 
 import java.io.IOException;
 
@@ -24,7 +27,19 @@ public class NameServerStartUp {
         ReplicationModeEnum replicationModeEnum = replicationService.checkProperties();
         replicationService.startReplicationTask(replicationModeEnum);
         if (replicationModeEnum == ReplicationModeEnum.MASTER_SLAVE) {
-            CommonCache.getMasterReplicationMsgSendTask().startSendReplicationMsgTask();
+            String role = CommonCache.getNameServerProperties().getMasterSlavingReplicationProperties().getRole();
+            ReplicationRoleEnum roleEnum = ReplicationRoleEnum.of(role);
+            ReplicationTask replicationTask = null;
+
+            if (roleEnum == ReplicationRoleEnum.MASTER) {
+                replicationTask = new MasterReplicationMsgSendTask("master-replication-msg-send-task");
+                replicationTask.startTaskAsync();
+            } else if (roleEnum == ReplicationRoleEnum.SLAVE) {
+                replicationTask = new SlaveReplicationHeartBeatTask("slave-replication-heart-beat-send-task");
+                replicationTask.startTaskAsync();
+            }
+
+            CommonCache.setReplicationTask(replicationTask);
         }
     }
 
