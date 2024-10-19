@@ -48,6 +48,8 @@ public class MasterReplicationServerHandler extends SimpleChannelInboundHandler 
             event = JsonUtils.toBean(new String(body), StartReplicationEvent.class);
         } else if (NameServerEventCodeEnum.SLAVE_HEART_BEAT.getCode() == code) {
             event = new SlaveHeartBeatEvent();
+        } else {
+            return;
         }
 
         event.setChannelHandlerContext(ctx);

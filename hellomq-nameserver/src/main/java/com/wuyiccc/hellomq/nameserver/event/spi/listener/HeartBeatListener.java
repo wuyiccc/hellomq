@@ -7,7 +7,6 @@ import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.HeartBeatEvent;
 import com.wuyiccc.hellomq.nameserver.event.model.ReplicationMsgEvent;
-import com.wuyiccc.hellomq.nameserver.handler.TcpNettyServerHandler;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;

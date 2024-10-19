@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver.core;
 
+import com.wuyiccc.hellomq.common.coder.Splitter;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
 import com.wuyiccc.hellomq.nameserver.event.EventBus;
@@ -42,12 +43,16 @@ public class NameServerStarter {
 
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
+
+        TcpNettyServerHandler tcpNettyServerHandler = new TcpNettyServerHandler(new EventBus("broker-connection-task"));
+
         bootstrap.childHandler(new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
+                ch.pipeline().addLast(new Splitter());
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
-                ch.pipeline().addLast(new TcpNettyServerHandler(new EventBus("broker-connection-task")));
+                ch.pipeline().addLast(tcpNettyServerHandler);
             }
         });
 

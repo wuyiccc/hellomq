@@ -27,11 +27,12 @@ public class EventBus {
     private static final Logger log = LoggerFactory.getLogger(EventBus.class);
 
 
-    private static Map<Class<? extends Event>, List<Listener>> eventListenerMap = new ConcurrentHashMap<>();
+    private Map<Class<? extends Event>, List<Listener>> eventListenerMap = new ConcurrentHashMap<>();
 
     private String taskName;
 
     public EventBus(String taskName) {
+        log.info("初始化: {}", taskName);
         this.taskName = taskName;
     }
 
@@ -48,6 +49,7 @@ public class EventBus {
 
     public void init() {
 
+        log.info("eventBus init");
         ServiceLoader<Listener> serviceLoader = ServiceLoader.load(Listener.class);
         for (Listener listener : serviceLoader) {
             Class clazz = ReflectUtils.getInterfaceT(listener, 0);

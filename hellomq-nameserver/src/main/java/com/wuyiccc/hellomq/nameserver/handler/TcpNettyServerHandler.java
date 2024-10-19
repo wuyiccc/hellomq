@@ -49,6 +49,8 @@ public class TcpNettyServerHandler extends SimpleChannelInboundHandler {
             event = JsonUtils.toBean(new String(body), UnRegistryEvent.class);
         } else if (NameServerEventCodeEnum.HEART_BEAT.getCode() == code) {
             event = new HeartBeatEvent();
+        } else {
+            return;
         }
 
         event.setChannelHandlerContext(ctx);

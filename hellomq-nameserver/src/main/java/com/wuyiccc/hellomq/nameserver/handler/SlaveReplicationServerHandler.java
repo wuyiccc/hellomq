@@ -44,6 +44,8 @@ public class SlaveReplicationServerHandler extends SimpleChannelInboundHandler {
         Event event = null;
         if (NameServerEventCodeEnum.MASTER_REPLICATION_MSG.getCode() == code) {
             event = JsonUtils.toBean(new String(body), ReplicationMsgEvent.class);
+        } else {
+            return;
         }
 
         event.setChannelHandlerContext(ctx);
@@ -53,10 +55,11 @@ public class SlaveReplicationServerHandler extends SimpleChannelInboundHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 
+        log.info("channelInactive执行 ctx: {}", ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
-    }
+        log.error("exceptionCaught执行", cause);
+        super.exceptionCaught(ctx, cause);    }
 }

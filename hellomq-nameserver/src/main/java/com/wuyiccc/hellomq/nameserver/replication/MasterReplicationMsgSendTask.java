@@ -32,6 +32,8 @@ public class MasterReplicationMsgSendTask extends ReplicationTask {
 
                 byte[] body = JsonUtils.toJsonBytes(replicationMsgEvent);
                 Map<String, ChannelHandlerContext> channelHandlerContextMap = CommonCache.getReplicationChannelManager().getChannelHandlerContextMap();
+
+                //
                 for (String reqId : channelHandlerContextMap.keySet()) {
                     channelHandlerContextMap.get(reqId).writeAndFlush(new TcpMsg(NameServerEventCodeEnum.MASTER_REPLICATION_MSG.getCode(), body));
                 }

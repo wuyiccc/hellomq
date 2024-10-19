@@ -50,12 +50,15 @@ public class NameServerClient {
 
         bootstrap.group(clientGroup);
         bootstrap.channel(NioSocketChannel.class);
+
+        NameServerRespChannelHandler nameServerRespChannelHandler = new NameServerRespChannelHandler();
+
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
-                ch.pipeline().addLast(new NameServerRespChannelHandler());
+                ch.pipeline().addLast(nameServerRespChannelHandler);
             }
         });
 
