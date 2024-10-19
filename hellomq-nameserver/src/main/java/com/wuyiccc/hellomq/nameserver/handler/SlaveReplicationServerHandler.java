@@ -5,7 +5,7 @@ import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import com.wuyiccc.hellomq.common.utils.JsonUtils;
 import com.wuyiccc.hellomq.nameserver.event.EventBus;
 import com.wuyiccc.hellomq.nameserver.event.model.Event;
-import com.wuyiccc.hellomq.nameserver.event.model.StartReplicationEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.ReplicationMsgEvent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -42,8 +42,8 @@ public class SlaveReplicationServerHandler extends SimpleChannelInboundHandler {
 
         // 从节点发起链接, 在master端通过密码进行验证, 建立链接
         Event event = null;
-        if (NameServerEventCodeEnum.START_REPLICATION.getCode() == code) {
-            event = JsonUtils.toBean(new String(body), StartReplicationEvent.class);
+        if (NameServerEventCodeEnum.MASTER_REPLICATION_MSG.getCode() == code) {
+            event = JsonUtils.toBean(new String(body), ReplicationMsgEvent.class);
         }
 
         event.setChannelHandlerContext(ctx);

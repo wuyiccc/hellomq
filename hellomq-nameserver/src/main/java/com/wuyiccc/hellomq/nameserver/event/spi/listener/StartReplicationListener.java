@@ -7,11 +7,13 @@ import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
+import com.wuyiccc.hellomq.nameserver.event.model.Event;
 import com.wuyiccc.hellomq.nameserver.event.model.StartReplicationEvent;
 import com.wuyiccc.hellomq.nameserver.utils.NameServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -35,6 +37,10 @@ public class StartReplicationListener implements Listener<StartReplicationEvent>
             channelHandlerContext.close();
             throw new IllegalAccessException("error account to connected!");
         }
+
+        InetSocketAddress inetSocketAddress = (InetSocketAddress) channelHandlerContext.channel().remoteAddress();
+        event.setSlaveIp(inetSocketAddress.getHostString());
+        event.setSlavePort(String.valueOf(inetSocketAddress.getPort()));
 
         String reqId = event.getSlaveIp() + StrConstants.COLON + event.getSlavePort();
         channelHandlerContext.attr(AttributeKey.valueOf(BaseConstants.REQ_ID)).set(reqId);

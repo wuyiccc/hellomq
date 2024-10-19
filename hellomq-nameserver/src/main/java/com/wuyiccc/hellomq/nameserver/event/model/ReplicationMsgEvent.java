@@ -6,7 +6,7 @@ import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
  * @author wuyiccc
  * @date 2024/10/16 23:06
  */
-public class ReplicationMsgEvent {
+public class ReplicationMsgEvent extends Event {
 
     private ServiceInstance serviceInstance;
 
