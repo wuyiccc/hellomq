@@ -5,6 +5,8 @@ import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import com.wuyiccc.hellomq.common.utils.JsonUtils;
 import com.wuyiccc.hellomq.nameserver.event.EventBus;
 import com.wuyiccc.hellomq.nameserver.event.model.Event;
+import com.wuyiccc.hellomq.nameserver.event.model.HeartBeatEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.SlaveHeartBeatEvent;
 import com.wuyiccc.hellomq.nameserver.event.model.StartReplicationEvent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,6 +46,8 @@ public class MasterReplicationServerHandler extends SimpleChannelInboundHandler 
         Event event = null;
         if (NameServerEventCodeEnum.START_REPLICATION.getCode() == code) {
             event = JsonUtils.toBean(new String(body), StartReplicationEvent.class);
+        } else if (NameServerEventCodeEnum.SLAVE_HEART_BEAT.getCode() == code) {
+            event = new SlaveHeartBeatEvent();
         }
 
         event.setChannelHandlerContext(ctx);

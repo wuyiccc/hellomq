@@ -17,8 +17,6 @@ import java.util.concurrent.BlockingQueue;
  */
 public class MasterReplicationMsgSendTask extends ReplicationTask {
 
-    private BlockingQueue<ReplicationMsgEvent> replicationMsgEventQueue = new ArrayBlockingQueue<>(5000);
-
     public MasterReplicationMsgSendTask(String taskName) {
         super(taskName);
     }
@@ -29,7 +27,9 @@ public class MasterReplicationMsgSendTask extends ReplicationTask {
         while (true) {
 
             try {
-                ReplicationMsgEvent replicationMsgEvent = replicationMsgEventQueue.take();
+
+                ReplicationMsgEvent replicationMsgEvent = CommonCache.getReplicationMsgQueueManager().getReplicationMsgEventQueue().take();
+
                 byte[] body = JsonUtils.toJsonBytes(replicationMsgEvent);
                 Map<String, ChannelHandlerContext> channelHandlerContextMap = CommonCache.getReplicationChannelManager().getChannelHandlerContextMap();
                 for (String reqId : channelHandlerContextMap.keySet()) {

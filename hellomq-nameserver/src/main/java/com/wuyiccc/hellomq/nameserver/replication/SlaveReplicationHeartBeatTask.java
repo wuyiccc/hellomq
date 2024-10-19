@@ -29,6 +29,11 @@ public class SlaveReplicationHeartBeatTask extends ReplicationTask {
     @Override
     public void startTask() {
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         StartReplicationEvent startReplicationEvent = new StartReplicationEvent();
         startReplicationEvent.setUser(CommonCache.getNameServerProperties().getNameserverUser());

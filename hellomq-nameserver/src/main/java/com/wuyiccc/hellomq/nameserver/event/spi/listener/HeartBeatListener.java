@@ -6,6 +6,7 @@ import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.HeartBeatEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.ReplicationMsgEvent;
 import com.wuyiccc.hellomq.nameserver.handler.TcpNettyServerHandler;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
 import io.netty.channel.ChannelHandlerContext;
@@ -53,6 +54,10 @@ public class HeartBeatListener implements Listener<HeartBeatEvent> {
         log.info("心跳更新数据为: {}", serviceInstance);
 
         CommonCache.getServiceInstanceManager().putIfExist(serviceInstance);
+
+        ReplicationMsgEvent replicationMsgEvent = new ReplicationMsgEvent();
+        replicationMsgEvent.setServiceInstance(serviceInstance);
+        CommonCache.getReplicationMsgQueueManager().put(replicationMsgEvent);
 
     }
 }

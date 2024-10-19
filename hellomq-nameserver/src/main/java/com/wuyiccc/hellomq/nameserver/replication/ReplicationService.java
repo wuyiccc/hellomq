@@ -118,6 +118,7 @@ public class ReplicationService {
             // 连接了master节点的channel对象, 建议保存
             channel = channelFuture.channel();
             log.info("success connected to nameserver replication");
+            CommonCache.setMasterConnection(channel);
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

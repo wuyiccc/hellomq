@@ -6,6 +6,7 @@ import com.wuyiccc.hellomq.common.constants.StrConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerResponseCodeEnum;
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.event.model.RegistryEvent;
+import com.wuyiccc.hellomq.nameserver.event.model.ReplicationMsgEvent;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
 import com.wuyiccc.hellomq.nameserver.utils.NameServerUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,8 +50,14 @@ public class RegistryListener implements Listener<RegistryEvent> {
         serviceInstance.setFirstRegistryTime(currentTimestamp);
         CommonCache.getServiceInstanceManager().put(serviceInstance);
 
+        // 如果当前是主从复制模式, 而且当前角色是主节点, 那么就往复制队列里面放元素
+        ReplicationMsgEvent replicationMsgEvent = new ReplicationMsgEvent();
+        replicationMsgEvent.setServiceInstance(serviceInstance);
+        CommonCache.getReplicationMsgQueueManager().put(replicationMsgEvent);
+
         TcpMsg registrySuccessResponseMsg = new TcpMsg(NameServerResponseCodeEnum.REGISTRY_SUCCESS.getCode()
                 , NameServerResponseCodeEnum.REGISTRY_SUCCESS.getDesc().getBytes(StandardCharsets.UTF_8));
         channelHandlerContext.writeAndFlush(registrySuccessResponseMsg);
+
     }
 }

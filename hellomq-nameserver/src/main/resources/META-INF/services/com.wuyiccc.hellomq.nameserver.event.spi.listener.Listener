@@ -3,3 +3,4 @@ com.wuyiccc.hellomq.nameserver.event.spi.listener.RegistryListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.UnRegistryListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.StartReplicationListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.SlaveReplicationMsgListener
+com.wuyiccc.hellomq.nameserver.event.spi.listener.SlaveHeartBeatListener

@@ -4,6 +4,7 @@ import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.core.PropertiesLoader;
 import com.wuyiccc.hellomq.nameserver.replication.ReplicationTask;
 import com.wuyiccc.hellomq.nameserver.store.ReplicationChannelManager;
+import com.wuyiccc.hellomq.nameserver.store.ReplicationMsgQueueManager;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstanceManager;
 import io.netty.channel.Channel;
 
@@ -27,6 +28,8 @@ public class CommonCache {
     private static ReplicationTask replicationTask;
 
     private static Channel masterConnection = null;
+
+    private static ReplicationMsgQueueManager replicationMsgQueueManager = new ReplicationMsgQueueManager();
 
     public static PropertiesLoader getPropertiesLoader() {
         return propertiesLoader;
@@ -75,5 +78,13 @@ public class CommonCache {
 
     public static void setMasterConnection(Channel masterConnection) {
         CommonCache.masterConnection = masterConnection;
+    }
+
+    public static ReplicationMsgQueueManager getReplicationMsgQueueManager() {
+        return replicationMsgQueueManager;
+    }
+
+    public static void setReplicationMsgQueueManager(ReplicationMsgQueueManager replicationMsgQueueManager) {
+        CommonCache.replicationMsgQueueManager = replicationMsgQueueManager;
     }
 }
