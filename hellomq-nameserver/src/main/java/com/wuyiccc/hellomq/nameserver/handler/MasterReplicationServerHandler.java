@@ -57,10 +57,13 @@ public class MasterReplicationServerHandler extends SimpleChannelInboundHandler 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 
+
+        log.info("channelInactive执行 ctx: {}", ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.error("exceptionCaught执行", cause);
         super.exceptionCaught(ctx, cause);
     }
 }
