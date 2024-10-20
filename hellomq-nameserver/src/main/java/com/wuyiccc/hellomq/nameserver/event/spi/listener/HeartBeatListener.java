@@ -56,6 +56,7 @@ public class HeartBeatListener implements Listener<HeartBeatEvent> {
 
         ReplicationMsgEvent replicationMsgEvent = new ReplicationMsgEvent();
         replicationMsgEvent.setServiceInstance(serviceInstance);
+        replicationMsgEvent.setChannelHandlerContext(channelHandlerContext);
         CommonCache.getReplicationMsgQueueManager().put(replicationMsgEvent);
 
     }

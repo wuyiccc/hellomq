@@ -5,6 +5,8 @@ import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.constants.BaseConstants;
 import com.wuyiccc.hellomq.common.enums.NameServerEventCodeEnum;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,6 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2024/10/7 20:43
  */
 public class HeartBeatTaskManager {
+
+    private static final Logger log = LoggerFactory.getLogger(HeartBeatTaskManager.class);
+
 
     private AtomicInteger flag = new AtomicInteger(0);
 
@@ -40,6 +45,7 @@ public class HeartBeatTaskManager {
                     Channel channel = CommonCache.getNameServerClient().getChannel();
                     TcpMsg tcpMsg = new TcpMsg(NameServerEventCodeEnum.HEART_BEAT.getCode(), new byte[]{});
                     channel.writeAndFlush(tcpMsg);
+                    log.info("发送定时心跳包给nameserver");
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

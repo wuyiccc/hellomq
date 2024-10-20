@@ -5,3 +5,5 @@ com.wuyiccc.hellomq.nameserver.event.spi.listener.StartReplicationListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.SlaveReplicationMsgListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.SlaveHeartBeatListener
 com.wuyiccc.hellomq.nameserver.event.spi.listener.SlaveReplicationMsgAckListener
+com.wuyiccc.hellomq.nameserver.event.spi.listener.NodeReplicationMsgListener
+com.wuyiccc.hellomq.nameserver.event.spi.listener.NodeReplicationAckMsgEventListener

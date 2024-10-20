@@ -73,7 +73,9 @@ public class BrokerConstants {
 
     public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_MASTER_SLAVE_TYPE = "nameserver.replication.master.slave.type";
 
-    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_NEXT_NODE = "nameserver.replication.next.node";
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_TRACE_NEXT_NODE = "nameserver.replication.trace.next.node";
+
+    public static final String PROPERTY_KEY_NAMESERVER_REPLICATION_TRACE_PORT = "nameserver.replication.trace.port";
 
     private BrokerConstants() {
     }

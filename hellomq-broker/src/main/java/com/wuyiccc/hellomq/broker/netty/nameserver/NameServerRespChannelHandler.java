@@ -22,6 +22,7 @@ public class NameServerRespChannelHandler extends SimpleChannelInboundHandler {
         TcpMsg tcpMsg = (TcpMsg) msg;
         if (NameServerResponseCodeEnum.REGISTRY_SUCCESS.getCode() == tcpMsg.getCode()) {
             // 注册成功, 开启心跳定时任务上报给nameserver
+            log.info("注册成功, 开启心跳任务");
             CommonCache.getHeartBeatTaskManager().startTask();
         } else if (NameServerResponseCodeEnum.ERROR_USER_OR_PASSWORD.getCode() == tcpMsg.getCode()) {
             // 验证失败, 抛出异常

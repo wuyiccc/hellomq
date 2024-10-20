@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver.cache;
 
+import com.wuyiccc.hellomq.common.dto.NodeAckDTO;
 import com.wuyiccc.hellomq.common.dto.SlaveAckDTO;
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.core.PropertiesLoader;
@@ -12,7 +13,6 @@ import io.netty.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -33,11 +33,17 @@ public class CommonCache {
 
     private static ReplicationTask replicationTask;
 
-    private static Channel masterConnection = null;
+    // master-slave模式的slave的channel, trace复制模式, 下一个节点的channel
+    private static Channel connectNodeChannel = null;
+
+    // trace复制模式, 上一个节点的channel
+    private static Channel preNodeChannel = null;
 
     private static ReplicationMsgQueueManager replicationMsgQueueManager = new ReplicationMsgQueueManager();
 
     private static Map<String, SlaveAckDTO> ackMap = new ConcurrentHashMap<>();
+
+    private static Map<String, NodeAckDTO> nodeAckMap = new ConcurrentHashMap<>();
 
     public static PropertiesLoader getPropertiesLoader() {
         return propertiesLoader;
@@ -80,12 +86,12 @@ public class CommonCache {
         CommonCache.replicationTask = replicationTask;
     }
 
-    public static Channel getMasterConnection() {
-        return masterConnection;
+    public static Channel getConnectNodeChannel() {
+        return connectNodeChannel;
     }
 
-    public static void setMasterConnection(Channel masterConnection) {
-        CommonCache.masterConnection = masterConnection;
+    public static void setConnectNodeChannel(Channel connectNodeChannel) {
+        CommonCache.connectNodeChannel = connectNodeChannel;
     }
 
     public static ReplicationMsgQueueManager getReplicationMsgQueueManager() {
@@ -102,5 +108,21 @@ public class CommonCache {
 
     public static void setAckMap(Map<String, SlaveAckDTO> ackMap) {
         CommonCache.ackMap = ackMap;
+    }
+
+    public static Channel getPreNodeChannel() {
+        return preNodeChannel;
+    }
+
+    public static void setPreNodeChannel(Channel preNodeChannel) {
+        CommonCache.preNodeChannel = preNodeChannel;
+    }
+
+    public static Map<String, NodeAckDTO> getNodeAckMap() {
+        return nodeAckMap;
+    }
+
+    public static void setNodeAckMap(Map<String, NodeAckDTO> nodeAckMap) {
+        CommonCache.nodeAckMap = nodeAckMap;
     }
 }

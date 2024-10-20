@@ -5,10 +5,7 @@ import com.wuyiccc.hellomq.nameserver.core.InValidServiceRemoveTask;
 import com.wuyiccc.hellomq.nameserver.core.NameServerStarter;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationModeEnum;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationRoleEnum;
-import com.wuyiccc.hellomq.nameserver.replication.MasterReplicationMsgSendTask;
-import com.wuyiccc.hellomq.nameserver.replication.ReplicationService;
-import com.wuyiccc.hellomq.nameserver.replication.ReplicationTask;
-import com.wuyiccc.hellomq.nameserver.replication.SlaveReplicationHeartBeatTask;
+import com.wuyiccc.hellomq.nameserver.replication.*;
 
 import java.io.IOException;
 
@@ -26,10 +23,10 @@ public class NameServerStartUp {
 
         ReplicationModeEnum replicationModeEnum = replicationService.checkProperties();
         replicationService.startReplicationTask(replicationModeEnum);
+        ReplicationTask replicationTask = null;
         if (replicationModeEnum == ReplicationModeEnum.MASTER_SLAVE) {
             String role = CommonCache.getNameServerProperties().getMasterSlavingReplicationProperties().getRole();
             ReplicationRoleEnum roleEnum = ReplicationRoleEnum.of(role);
-            ReplicationTask replicationTask = null;
 
             if (roleEnum == ReplicationRoleEnum.MASTER) {
                 replicationTask = new MasterReplicationMsgSendTask("master-replication-msg-send-task");
@@ -38,9 +35,12 @@ public class NameServerStartUp {
                 replicationTask = new SlaveReplicationHeartBeatTask("slave-replication-heart-beat-send-task");
                 replicationTask.startTaskAsync();
             }
+        } else if (replicationModeEnum == ReplicationModeEnum.TRACE) {
 
-            CommonCache.setReplicationTask(replicationTask);
+            replicationTask = new NodeReplicationSendMsgTask("node-replication-msg-send-task");
+            replicationTask.startTaskAsync();
         }
+        CommonCache.setReplicationTask(replicationTask);
     }
 
     private static void initInvalidServerRemoveTask() {

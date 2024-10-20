@@ -7,6 +7,7 @@ import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
 import com.wuyiccc.hellomq.nameserver.config.MasterSlavingReplicationProperties;
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.config.TraceReplicationProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,8 @@ public class PropertiesLoader {
         nameServerProperties.setReplicationMode(getStr(BrokerConstants.PROPERTY_KEY_NAMESERVER_REPLICATION_MODE));
 
         TraceReplicationProperties traceReplicationProperties = new TraceReplicationProperties();
-        traceReplicationProperties.setNextNode(getStrCanBeNull(BrokerConstants.PROPERTY_KEY_NAMESERVER_REPLICATION_NEXT_NODE));
+        traceReplicationProperties.setNextNode(getStrCanBeNull(BrokerConstants.PROPERTY_KEY_NAMESERVER_REPLICATION_TRACE_NEXT_NODE));
+        traceReplicationProperties.setPort(getIntCanBeNull(BrokerConstants.PROPERTY_KEY_NAMESERVER_REPLICATION_TRACE_PORT));
         nameServerProperties.setTraceReplicationProperties(traceReplicationProperties);
 
         MasterSlavingReplicationProperties masterSlavingReplicationProperties = new MasterSlavingReplicationProperties();
@@ -57,8 +59,8 @@ public class PropertiesLoader {
 
     private String getStrCanBeNull(String key) {
         String value = properties.getProperty(key);
-        if (value ==null) {
-            return StrConstants.EMPTY;
+        if (value == null) {
+            return null;
         }
         return value;
     }
@@ -69,6 +71,20 @@ public class PropertiesLoader {
             throw new RuntimeException("配置参数: " + key + "不存在");
         }
         return value;
+    }
+
+    private Integer getIntCanBeNull(String key) {
+
+        String value = properties.getProperty(key);
+        if (value == null) {
+            return null;
+        }
+
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
+
+        return Integer.valueOf(value);
     }
 
     private Integer getInt(String key) {

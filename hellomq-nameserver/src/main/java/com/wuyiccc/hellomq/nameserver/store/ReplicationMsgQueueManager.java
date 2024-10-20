@@ -1,6 +1,7 @@
 package com.wuyiccc.hellomq.nameserver.store;
 
 import com.wuyiccc.hellomq.nameserver.cache.CommonCache;
+import com.wuyiccc.hellomq.nameserver.config.TraceReplicationProperties;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationModeEnum;
 import com.wuyiccc.hellomq.nameserver.enums.ReplicationRoleEnum;
 import com.wuyiccc.hellomq.nameserver.event.model.ReplicationMsgEvent;
@@ -34,11 +35,24 @@ public class ReplicationMsgQueueManager {
             if (roleEnum != ReplicationRoleEnum.MASTER) {
                 return;
             }
-            try {
-                replicationMsgEventQueue.put(replicationMsgEvent);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+
+            sendMsgToQueue(replicationMsgEvent);
+        } else if (replicationModeEnum == ReplicationModeEnum.TRACE) {
+
+            TraceReplicationProperties traceReplicationProperties = CommonCache.getNameServerProperties().getTraceReplicationProperties();
+            String nextNode = traceReplicationProperties.getNextNode();
+            if (nextNode != null) {
+                sendMsgToQueue(replicationMsgEvent);
             }
+        }
+    }
+
+    private void sendMsgToQueue(ReplicationMsgEvent replicationMsgEvent) {
+
+        try {
+            replicationMsgEventQueue.put(replicationMsgEvent);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
