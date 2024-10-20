@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver.cache;
 
+import com.wuyiccc.hellomq.common.dto.SlaveAckDTO;
 import com.wuyiccc.hellomq.nameserver.config.NameServerProperties;
 import com.wuyiccc.hellomq.nameserver.core.PropertiesLoader;
 import com.wuyiccc.hellomq.nameserver.replication.ReplicationTask;
@@ -7,6 +8,11 @@ import com.wuyiccc.hellomq.nameserver.store.ReplicationChannelManager;
 import com.wuyiccc.hellomq.nameserver.store.ReplicationMsgQueueManager;
 import com.wuyiccc.hellomq.nameserver.store.ServiceInstanceManager;
 import io.netty.channel.Channel;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -30,6 +36,8 @@ public class CommonCache {
     private static Channel masterConnection = null;
 
     private static ReplicationMsgQueueManager replicationMsgQueueManager = new ReplicationMsgQueueManager();
+
+    private static Map<String, SlaveAckDTO> ackMap = new ConcurrentHashMap<>();
 
     public static PropertiesLoader getPropertiesLoader() {
         return propertiesLoader;
@@ -86,5 +94,13 @@ public class CommonCache {
 
     public static void setReplicationMsgQueueManager(ReplicationMsgQueueManager replicationMsgQueueManager) {
         CommonCache.replicationMsgQueueManager = replicationMsgQueueManager;
+    }
+
+    public static Map<String, SlaveAckDTO> getAckMap() {
+        return ackMap;
+    }
+
+    public static void setAckMap(Map<String, SlaveAckDTO> ackMap) {
+        CommonCache.ackMap = ackMap;
     }
 }

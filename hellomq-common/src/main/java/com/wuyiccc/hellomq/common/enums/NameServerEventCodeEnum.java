@@ -21,7 +21,10 @@ public enum NameServerEventCodeEnum {
     MASTER_REPLICATION_MSG(6, "主从同步数据"),
 
     // 从节点发送
-    SLAVE_HEART_BEAT(7,"从节点心跳数据")
+    SLAVE_HEART_BEAT(7,"从节点心跳数据"),
+
+    SLAVE_REPLICATION_ACK_MSG(8, "从节点接收同步数据成功"),
+
     ;
 
     private int code;

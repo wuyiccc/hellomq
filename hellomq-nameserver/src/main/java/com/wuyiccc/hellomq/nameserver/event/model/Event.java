@@ -8,19 +8,13 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public abstract class Event {
 
-    private long timestamp;
 
+    private String msgId;
 
     private ChannelHandlerContext channelHandlerContext;
 
 
-    public long getTimestamp() {
-        return timestamp;
-    }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 
     public ChannelHandlerContext getChannelHandlerContext() {
         return channelHandlerContext;
@@ -30,10 +24,18 @@ public abstract class Event {
         this.channelHandlerContext = channelHandlerContext;
     }
 
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
-                "timestamp=" + timestamp +
+                "msgId='" + msgId + '\'' +
                 ", channelHandlerContext=" + channelHandlerContext +
                 '}';
     }

@@ -1,7 +1,10 @@
 package com.wuyiccc.hellomq.nameserver.store;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,4 +30,29 @@ public class ReplicationChannelManager {
 
         return channelHandlerContextMap.get(reqId);
     }
+
+
+    public Map<String, ChannelHandlerContext> getValidSlaveChannelMap() {
+
+        List<String> inValidChannelReqIdList = new ArrayList<>();
+
+
+        for (String reqId : channelHandlerContextMap.keySet()) {
+
+            Channel slaveChannel = channelHandlerContextMap.get(reqId).channel();
+            if (!slaveChannel.isActive()) {
+                inValidChannelReqIdList.add(reqId);
+            }
+        }
+
+        if (!inValidChannelReqIdList.isEmpty()) {
+            for (String reqId : inValidChannelReqIdList) {
+
+                // 移除不可用的channel
+                channelHandlerContextMap.remove(reqId);
+            }
+        }
+        return channelHandlerContextMap;
+    }
+
 }

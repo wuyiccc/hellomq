@@ -1,5 +1,6 @@
 package com.wuyiccc.hellomq.nameserver.replication;
 
+import com.wuyiccc.hellomq.common.coder.Splitter;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
 import com.wuyiccc.hellomq.common.constants.StrConstants;
@@ -100,6 +101,7 @@ public class ReplicationService {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new Splitter());
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
                 ch.pipeline().addLast(simpleChannelInboundHandler);

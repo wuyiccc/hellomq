@@ -11,7 +11,6 @@ import com.wuyiccc.hellomq.nameserver.store.ServiceInstance;
 import com.wuyiccc.hellomq.nameserver.utils.NameServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
-import io.netty.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +52,7 @@ public class RegistryListener implements Listener<RegistryEvent> {
         // 如果当前是主从复制模式, 而且当前角色是主节点, 那么就往复制队列里面放元素
         ReplicationMsgEvent replicationMsgEvent = new ReplicationMsgEvent();
         replicationMsgEvent.setServiceInstance(serviceInstance);
+        replicationMsgEvent.setChannelHandlerContext(channelHandlerContext);
         CommonCache.getReplicationMsgQueueManager().put(replicationMsgEvent);
 
         //TcpMsg registrySuccessResponseMsg = new TcpMsg(NameServerResponseCodeEnum.REGISTRY_SUCCESS.getCode()

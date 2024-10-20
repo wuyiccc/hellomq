@@ -2,6 +2,7 @@ package com.wuyiccc.hellomq.broker.netty.nameserver;
 
 import com.wuyiccc.hellomq.broker.cache.CommonCache;
 import com.wuyiccc.hellomq.broker.config.GlobalProperties;
+import com.wuyiccc.hellomq.common.coder.Splitter;
 import com.wuyiccc.hellomq.common.coder.TcpMsg;
 import com.wuyiccc.hellomq.common.coder.TcpMsgDecoder;
 import com.wuyiccc.hellomq.common.coder.TcpMsgEncoder;
@@ -56,6 +57,7 @@ public class NameServerClient {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new Splitter());
                 ch.pipeline().addLast(new TcpMsgDecoder());
                 ch.pipeline().addLast(new TcpMsgEncoder());
                 ch.pipeline().addLast(nameServerRespChannelHandler);

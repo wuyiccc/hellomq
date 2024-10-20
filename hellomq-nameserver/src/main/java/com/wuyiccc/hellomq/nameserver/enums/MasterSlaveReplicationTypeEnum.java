@@ -29,4 +29,14 @@ public enum MasterSlaveReplicationTypeEnum {
     public String getDesc() {
         return desc;
     }
+
+    public static MasterSlaveReplicationTypeEnum of(String code) {
+
+        for (MasterSlaveReplicationTypeEnum value : values()) {
+            if (value.getCode().equals(code)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }
